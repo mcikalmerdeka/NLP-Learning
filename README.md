@@ -1,5 +1,10 @@
 # NLP-Learning
 
+## E-Books and Other Reading Resources
+1. [Natural Language Processing with Python - Steven Bird, Ewan Klein, and Edward Loper](https://www.nltk.org/book/)
+2. [Machine Learning Notebook - Calvin Feng](https://calvinfeng.gitbook.io/machine-learning-notebook/)
+3. [Machine Learning and Deep Learning Cheatsheet - Shervine Amidi](https://stanford.edu/~shervine/teaching/cs-230/)
+
 ## Useful and Interesting Videos
 
 Lectures, Conferences, Video Essays about NLP and LLMs
