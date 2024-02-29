@@ -1,5 +1,8 @@
 # NLP-Learning
 
+## Github Repositories Related to NLP and LLMs
+1. [Generative AI Guide - Aishwarya Naresh Reganti](https://github.com/aishwaryanr/awesome-generative-ai-guide?tab=readme-ov-file)
+
 ## E-Books and Other Reading Resources
 1. [Natural Language Processing with Python - Steven Bird, Ewan Klein, and Edward Loper](https://www.nltk.org/book/)
 2. [Machine Learning Notebook - Calvin Feng](https://calvinfeng.gitbook.io/machine-learning-notebook/)
