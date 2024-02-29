@@ -5,8 +5,6 @@
 
 ## E-Books and Other Reading Resources
 1. [Natural Language Processing with Python - Steven Bird, Ewan Klein, and Edward Loper](https://www.nltk.org/book/)
-2. [Machine Learning Notebook - Calvin Feng](https://calvinfeng.gitbook.io/machine-learning-notebook/)
-3. [Machine Learning and Deep Learning Cheatsheet - Shervine Amidi](https://stanford.edu/~shervine/teaching/cs-230/)
 
 ## Useful and Interesting Videos
 
@@ -17,3 +15,7 @@ Lectures, Conferences, Video Essays about NLP and LLMs
 3. [(1hr Talk) Intro to Large Language Models - Andrej Karpathy](https://youtu.be/zjkBMFhNj_g?si=M9rND99UMzB_2qXx) (Nov 2023)
 4. [Let's build GPT: from scratch, in code, spelled out - Andrej Karpathy](https://youtu.be/kCc8FmEb1nY?si=3hKnX58An8deSz1f) (Jan 2023)
 
+## Other References Related to DS-ML-DL
+1. [Python Numerical Demos - Michael Pyrcz (GeostatsGuy)](https://github.com/GeostatsGuy/PythonNumericalDemos/tree/master)
+2. [Machine Learning Notebook - Calvin Feng](https://calvinfeng.gitbook.io/machine-learning-notebook/)
+3. [Machine Learning and Deep Learning Cheatsheet - Shervine Amidi](https://stanford.edu/~shervine/teaching/cs-230/)
