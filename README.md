@@ -2,6 +2,8 @@
 
 ## Github Repositories Related to NLP and LLMs
 1. [Generative AI Guide - Aishwarya Naresh Reganti](https://github.com/aishwaryanr/awesome-generative-ai-guide?tab=readme-ov-file)
+2. [Stanford's CS 224: Natural Language Processing with Deep Learning](https://github.com/khanhnamle1994/natural-language-processing)
+3. [spaCy Official GitHub](https://github.com/explosion/spaCy)
 
 ## E-Books and Other Reading Resources
 1. [Natural Language Processing with Python - Steven Bird, Ewan Klein, and Edward Loper](https://www.nltk.org/book/)
