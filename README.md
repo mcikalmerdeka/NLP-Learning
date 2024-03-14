@@ -17,6 +17,7 @@ Lectures, Conferences, Video Essays about NLP and LLMs
 3. [(1hr Talk) Intro to Large Language Models - Andrej Karpathy](https://youtu.be/zjkBMFhNj_g?si=M9rND99UMzB_2qXx) (Nov 2023)
 4. [Let's build GPT: from scratch, in code, spelled out - Andrej Karpathy](https://youtu.be/kCc8FmEb1nY?si=3hKnX58An8deSz1f) (Jan 2023)
 5. [How Nvidia Grew From Gaming To A.I. Giant, Now Powering ChatGPT - CNBC](https://youtu.be/d3L2uPuxOxU?si=qtBr6ix6uNrxTD2Q) (Mar 2023)
+6. [Large Language Models and Chatbots Youtube Playlist - IBM](https://www.youtube.com/watch?v=5sLYAQS9sWQ&list=PLOspHqNVtKAAsiohuZj1Bt4XpA3_bkS3c&index=2) (2023)
 
 ## Other References Related to DS-ML-DL
 1. [Python Numerical Demos - Michael Pyrcz (GeostatsGuy)](https://github.com/GeostatsGuy/PythonNumericalDemos/tree/master)
