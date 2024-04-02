@@ -19,6 +19,7 @@ Lectures, Conferences, Video Essays about NLP and LLMs
 5. [How Nvidia Grew From Gaming To A.I. Giant, Now Powering ChatGPT - CNBC](https://youtu.be/d3L2uPuxOxU?si=qtBr6ix6uNrxTD2Q) (Mar 2023)
 6. [Large Language Models and Chatbots Youtube Playlist - IBM](https://www.youtube.com/watch?v=5sLYAQS9sWQ&list=PLOspHqNVtKAAsiohuZj1Bt4XpA3_bkS3c&index=2) (2023)
 7. [NVIDIA GTC 2024 Keynote - NVIDIA](https://www.youtube.com/live/Y2F8yisiS6E?si=rYjO11F-dLKMLXxa) (Mar 2024)
+8. [But what is a GPT? Visual intro to Transformers | Deep learning, chapter 5 - 3Blue1Brown](https://youtu.be/wjZofJX0v4M?si=k9joK0SLhPOl6fbZ) (Apr 2024)
 
 ## Other References Related to DS-ML-DL
 1. [Python Numerical Demos - Michael Pyrcz (GeostatsGuy)](https://github.com/GeostatsGuy/PythonNumericalDemos/tree/master)
