@@ -25,3 +25,4 @@ Lectures, Conferences, Video Essays about NLP and LLMs
 1. [Python Numerical Demos - Michael Pyrcz (GeostatsGuy)](https://github.com/GeostatsGuy/PythonNumericalDemos/tree/master)
 2. [Machine Learning Notebook - Calvin Feng](https://calvinfeng.gitbook.io/machine-learning-notebook/)
 3. [Machine Learning and Deep Learning Cheatsheet - Shervine Amidi](https://stanford.edu/~shervine/teaching/cs-230/)
+4. [Machine Learning, Artificial Intelligence and Data Landscape - Matt Turck](https://mad.firstmark.com/)
