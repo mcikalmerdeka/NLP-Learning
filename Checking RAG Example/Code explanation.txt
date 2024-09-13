@@ -1,0 +1,97 @@
+Certainly! I'd be happy to provide you with a detailed implementation of RAG (Retrieval-Augmented Generation) in Python. This is a substantial piece of code that would benefit from being in an artifact for easy reference and modification. Let me create that for you.
+
+
+
+```python
+import numpy as np
+from typing import List, Tuple
+from transformers import AutoTokenizer, AutoModel, AutoModelForCausalLM
+from sklearn.metrics.pairwise import cosine_similarity
+
+class RAG:
+    def __init__(self, retriever_model_name: str, generator_model_name: str):
+        # Initialize tokenizers and models
+        self.retriever_tokenizer = AutoTokenizer.from_pretrained(retriever_model_name)
+        self.retriever_model = AutoModel.from_pretrained(retriever_model_name)
+        
+        self.generator_tokenizer = AutoTokenizer.from_pretrained(generator_model_name)
+        self.generator_model = AutoModelForCausalLM.from_pretrained(generator_model_name)
+        
+        self.documents = []
+        self.document_embeddings = []
+
+    def add_documents(self, documents: List[str]):
+        self.documents.extend(documents)
+        new_embeddings = self._embed_documents(documents)
+        self.document_embeddings.extend(new_embeddings)
+
+    def _embed_documents(self, documents: List[str]) -> List[np.ndarray]:
+        embeddings = []
+        for doc in documents:
+            inputs = self.retriever_tokenizer(doc, return_tensors="pt", truncation=True, max_length=512)
+            with torch.no_grad():
+                outputs = self.retriever_model(**inputs)
+            embeddings.append(outputs.last_hidden_state.mean(dim=1).squeeze().numpy())
+        return embeddings
+
+    def retrieve(self, query: str, k: int = 5) -> List[Tuple[str, float]]:
+        query_embedding = self._embed_documents([query])[0]
+        similarities = cosine_similarity([query_embedding], self.document_embeddings)[0]
+        top_k_indices = np.argsort(similarities)[-k:][::-1]
+        return [(self.documents[i], similarities[i]) for i in top_k_indices]
+
+    def generate(self, query: str, retrieved_docs: List[Tuple[str, float]]) -> str:
+        context = " ".join([doc for doc, _ in retrieved_docs])
+        prompt = f"Context: {context}\n\nQuery: {query}\n\nAnswer:"
+        
+        inputs = self.generator_tokenizer(prompt, return_tensors="pt")
+        with torch.no_grad():
+            outputs = self.generator_model.generate(**inputs, max_length=150, num_return_sequences=1)
+        
+        return self.generator_tokenizer.decode(outputs[0], skip_special_tokens=True)
+
+    def query(self, query: str, k: int = 5) -> str:
+        retrieved_docs = self.retrieve(query, k)
+        return self.generate(query, retrieved_docs)
+
+# Example usage
+if __name__ == "__main__":
+    # Initialize RAG with appropriate model names
+    rag = RAG("sentence-transformers/all-MiniLM-L6-v2", "gpt2")
+
+    # Add some example documents
+    documents = [
+        "The capital of France is Paris.",
+        "London is the capital of England.",
+        "Berlin is the capital of Germany.",
+        "Rome is the capital of Italy.",
+        "Madrid is the capital of Spain."
+    ]
+    rag.add_documents(documents)
+
+    # Query the RAG system
+    query = "What is the capital of France?"
+    result = rag.query(query)
+    print(f"Query: {query}")
+    print(f"Answer: {result}")
+
+```
+
+This implementation provides a complete RAG (Retrieval-Augmented Generation) system in Python. Here's a breakdown of the main components:
+
+1. The `RAG` class encapsulates the entire system.
+2. It uses two separate models: one for retrieval (embedding documents and queries) and another for generation.
+3. The `add_documents` method allows you to add documents to the system's knowledge base.
+4. The `retrieve` method finds the most relevant documents for a given query.
+5. The `generate` method produces an answer based on the query and retrieved documents.
+6. The `query` method combines retrieval and generation to answer questions.
+
+To use this implementation, you'll need to install the required libraries:
+
+```
+pip install transformers torch numpy scikit-learn
+```
+
+You can customize the retriever and generator models by changing the model names in the `RAG` initialization. The example uses "sentence-transformers/all-MiniLM-L6-v2" for retrieval and "gpt2" for generation, but you can replace these with other suitable models from the Hugging Face model hub.
+
+Would you like me to explain any part of the code in more detail or help you with running it?
