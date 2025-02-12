@@ -77,13 +77,13 @@ st.markdown("""
 # Define prompt template and model configurations
 PROMPT_TEMPLATE = """
 You are an expert research assistant. Use the provided context to answer the query. 
-If unsure, state that you don't know. Be concise and factual (max 7 sentences).
+If unsure, state that you don't know. Be concise and factual (max 15 sentences).
 
 Query: {user_query} 
 Context: {document_context} 
 Answer:
 """
-
+# Initialize the path for storing uploaded PDFs
 PDF_STORAGE_PATH = 'document_store/pdfs/'
 
 # Initialize embedding model (using OpenAI's ada-002)
@@ -98,7 +98,7 @@ DOCUMENT_VECTOR_DB = InMemoryVectorStore(EMBEDDING_MODEL)
 # Model options
 MODEL_OPTIONS = {
     "GPT-4o": "gpt-4o",
-    "Claude 3.5 Sonnet": "claude-3-sonnet-20240229"
+    "Claude 3.5 Sonnet": "claude-3-5-sonnet-20241022"
 }
 
 # Initialize the chosen language model
@@ -112,21 +112,23 @@ def initialize_language_model(model_choice):
     else:  # Claude 3.5 Sonnet
         return ChatAnthropic(
             api_key=os.getenv("ANTHROPIC_API_KEY"),
-            model="claude-3-sonnet-20240229",
+            model="claude-3-5-sonnet-20241022",
             temperature=0
         )
 
-# Helper Functions
+# Function to save the uploaded PDF file
 def save_uploaded_file(uploaded_file):
     file_path = PDF_STORAGE_PATH + uploaded_file.name
     with open(file_path, "wb") as file:
         file.write(uploaded_file.getbuffer())
     return file_path
 
+# Fuction to load PDF documents from the uploaded file
 def load_pdf_documents(file_path):
     document_loader = PDFPlumberLoader(file_path)
     return document_loader.load()
 
+# Function to chunk the documents into smaller parts
 def chunk_documents(raw_documents):
     text_processor = RecursiveCharacterTextSplitter(
         chunk_size=1000,
@@ -135,12 +137,15 @@ def chunk_documents(raw_documents):
     )
     return text_processor.split_documents(raw_documents)
 
+# Function to index the document chunks
 def index_documents(document_chunks):
     DOCUMENT_VECTOR_DB.add_documents(document_chunks)
 
+# Function to find related documents based on the user query
 def find_related_documents(query):
     return DOCUMENT_VECTOR_DB.similarity_search(query)
 
+# Function to generate an answer using the language model
 def generate_answer(user_query, context_documents, language_model):
     context_text = "\n\n".join([doc.page_content for doc in context_documents])
     conversation_prompt = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
@@ -168,6 +173,7 @@ def generate_answer(user_query, context_documents, language_model):
     
     return cleaned_response
 
+# Function to display the chat history
 def display_chat_history():
     # Display all messages in the chat history
     for message in st.session_state.chat_history:
@@ -203,12 +209,13 @@ uploaded_pdf = st.file_uploader(
 )
 
 # Main App Logic
-if uploaded_pdf:
-    saved_path = save_uploaded_file(uploaded_pdf)
-    raw_docs = load_pdf_documents(saved_path)
-    processed_chunks = chunk_documents(raw_docs)
-    index_documents(processed_chunks)
+if uploaded_pdf: # If a PDF file is uploaded
+    saved_path = save_uploaded_file(uploaded_pdf) # Save the uploaded file
+    raw_docs = load_pdf_documents(saved_path) # Load the PDF document
+    processed_chunks = chunk_documents(raw_docs) # Chunk the document into smaller parts
+    index_documents(processed_chunks) # Index the document chunks
     
+    # Display success message
     st.success(f"✅ Document processed successfully! Ask your questions below (using {selected_model})")
     
     # Display existing chat history
@@ -222,8 +229,8 @@ if uploaded_pdf:
         st.session_state.chat_history.append({"role": "user", "content": user_input})
         
         with st.spinner("Analyzing document..."):
-            relevant_docs = find_related_documents(user_input)
-            ai_response = generate_answer(user_input, relevant_docs, LANGUAGE_MODEL)
+            relevant_docs = find_related_documents(user_input) # Find relevant documents based on the user query
+            ai_response = generate_answer(user_input, relevant_docs, LANGUAGE_MODEL) # Generate an answer using the language model
             
             # Add assistant response to chat history
             st.session_state.chat_history.append({"role": "assistant", "content": ai_response})
