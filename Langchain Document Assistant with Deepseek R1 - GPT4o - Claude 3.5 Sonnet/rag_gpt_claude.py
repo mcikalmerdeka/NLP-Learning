@@ -86,10 +86,10 @@ Answer:
 # Initialize the path for storing uploaded PDFs
 PDF_STORAGE_PATH = 'document_store/pdfs/'
 
-# Initialize embedding model (using OpenAI's ada-002)
+# Initialize embedding model (using OpenAI's latest model)
 EMBEDDING_MODEL = OpenAIEmbeddings(
     api_key=os.getenv("OPENAI_API_KEY"),
-    model="text-embedding-3-small"
+    model="text-embedding-3-large"
 )
 
 # Initialize vector store
@@ -184,6 +184,15 @@ def display_chat_history():
 st.title("📘 DocuMind AI")
 st.markdown("### Your Intelligent Document Assistant")
 st.markdown("---")
+
+# Add application explanation
+st.expander("ℹ️ About DocuMind AI").markdown(
+"""
+    - This app allows you to upload a research document (in PDF format) and ask questions about its content.
+    - The AI assistant will help you find answers to your questions based on the document content.
+    - Choose an AI model from the sidebar and upload a PDF document to get started!
+"""
+)
 
 # Add a clear chat button in the sidebar
 if st.sidebar.button("Clear Chat History"):
