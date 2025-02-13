@@ -1,0 +1,87 @@
+Job description & requirements
+
+Aigens is a hotel and restaurant tech start-up that has helped steer the digital revolution of the F&B and Hospitality industry in Asia Pacific. We started as a 2-man team in 2012 and have since grown into a SaaS company known for being a market leader with significant wins, essentially being the first to introduce BYOD (Bring Your Own Device) QR code ordering technology to Hong Kong and Singapore.
+
+In the last three years, we’ve experienced our most significant growth to date: resulting in 6 regional offices across APAC, and 120 team members (and increasing every month). We are headquartered in Hong Kong, with offices in Bangkok, Jakarta, and Kuala Lumpur. We serve more than 500 brands in F&B and Hospitality, including global names like Accor, Hyatt, Centara, KFC, Burger King, Starbucks, etc..
+
+Catering to Aigens’ business growth and regional expansion opportunities, we are looking for a highly motivated, organized self-starter to join our team. You will be one of the key influencers to shape the customer experience of our key customers. This is an excellent opportunity to collaborate and work together with some of the best and brightest talents in the F&B Tech industry, furthering your career within one of the most influential F&B tech start-up companies in Hong Kong.
+
+
+What your daily work looks like:
+
+● Collect, clean, and process large datasets from various sources
+
+● Ensure data accuracy and integrity through regular quality checks
+
+● Perform exploratory data analysis to identify trends, patterns, and insights
+
+● Assist in the development of statistical models and algorithms
+
+● Generate regular reports and dashboards to communicate key performance indicators
+
+● Present findings to internal teams in a clear and understandable manner
+
+● Maintain and update databases, ensuring data consistency and completeness
+
+● Collaborate with IT and other teams to optimize database structures
+
+● Create visually appealing and informative charts, graphs, and presentations
+
+● Utilize tools such as metabase for effective data visualization
+
+● Work closely with cross-functional teams to understand data requirements and provide analytical support
+
+
+We are looking for someone with:
+
+● Hold a bachelor's degree in Computer Science, Statistics, Mathematics
+
+● 2+ years of relevant experience in Data Analyst, preferably in IT/Technology 
+
+● Strong analytical and problem-solving abilities
+
+● Strong in custom querying, dashboarding and analysis (SQL, Google BigQuery, reporting & dashboarding tools like DataStudio/Metabase)
+
+● Excellent communication skills with the ability to present complex data insights
+
+● Detail-oriented and able to manage multiple tasks simultaneously
+
+● Familiarity with F&B data and business processes
+
+● Basic knowledge of Google Analytics and programming languages (e.g., Python, R)
+
+● Excellent interpersonal skills and ability to work well with others
+
+● Demonstrates attention to detail and accuracy in work
+
+● Ability to work effectively under pressure and meet deadlines
+
+● Willingness to continuously learn and stay updated with industry trends and advancements
+
+● Clear and effective communication skills, both verbal and written
+
+● Demonstrates a strong sense of accountability and responsibility
+
+● Fluent in English both verbal and writing
+
+● Proficient in Mandarin and Cantonese is a plus
+
+
+What’s on offer:
+
+● Competitive salary for the right candidate
+
+● 5-day work week
+
+● Friendly and people-oriented work environment
+
+● Working in a flat culture with talented individuals
+
+● Join a young and growing brand backed by a great investment team
+
+
+We are excited to welcome a highly motivated individual to join our Team. If you meet the above qualifications and are eager to contribute to our organization's success, we encourage you to apply.
+
+Aigens is an equal opportunity employer that is committed to diversity and inclusion in the workplace. We prohibit discrimination and harassment of any kind based on race, color, gender, religion, sexual orientation, national origin, genetic information, or any other protected characteristic. 
+
+All applications will be handled in strict confidence and will only be used for recruitment related purposes. Applicants who do not hear from us within 6 weeks from the date of application may consider their applications unsuccessful. All information on unsuccessful candidates will be retained for a maximum period of 24 months

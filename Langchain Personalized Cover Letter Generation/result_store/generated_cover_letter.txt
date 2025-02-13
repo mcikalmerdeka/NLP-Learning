@@ -1,0 +1,20 @@
+Kepada Yth.
+Hiring Manager
+Aigens
+
+Dengan hormat,
+
+I am writing to express my strong interest in the Data Analyst position at Aigens. Your company's pioneering role in revolutionizing the F&B and Hospitality industry through innovative BYOD QR code ordering technology, along with your impressive growth across APAC, deeply resonates with my career aspirations in data analytics.
+
+Through my data analyst internship experiences, I have developed a strong foundation in the key technical skills required for this role. I have hands-on experience with many of the tools specified in your requirements, including SQL, Python, and Metabase. During my internship, I worked extensively with cross-functional teams to support data preparation and validation efforts, particularly in analyzing reconciliation processes using these tools on a daily basis.
+
+My project-based experience at Kimia Farma demonstrates my ability to deliver tangible business impact through data analysis. I designed data marts and executed ETL processes in BigQuery, ultimately developing a dashboard that identified opportunities to increase sales by 22% and transaction volume by 15% in specific regions. This experience aligns well with Aigens' need for someone who can process large datasets, ensure data accuracy, and communicate insights effectively through visualizations.
+
+I am particularly excited about the opportunity to contribute to Aigens' mission of transforming the F&B and hospitality industry through technology. Your work with prestigious global brands like Accor, Hyatt, and Starbucks presents an exciting opportunity to apply my analytical skills at scale while learning from industry leaders.
+
+My experience with data validation, ETL processes, and dashboard development, combined with my ability to work effectively in cross-functional teams, positions me well to contribute to Aigens' continued growth and success. I am eager to bring my analytical capabilities and collaborative approach to your team.
+
+Thank you for considering my application. I look forward to the possibility of discussing how I can contribute to Aigens' mission and growth.
+
+Hormat saya,
+[Your Name]
