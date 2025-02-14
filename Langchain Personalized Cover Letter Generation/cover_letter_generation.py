@@ -12,26 +12,29 @@ from langchain.schema import Document
 
 # Define the CoverLetterGenerator class
 class CoverLetterGenerator:
-    def __init__(self):
+    def __init__(self, clear_existing=True):
         load_dotenv()
         
-        # Initialize embeddings and vector store
         self.embeddings = OpenAIEmbeddings(api_key=os.getenv("OPENAI_API_KEY"), model="text-embedding-3-large")
         self.vector_store = None
+        self.persist_directory = "./data"
         
-        # Initialize LLM (using Anthropic's Claude, but can be switched to OpenAI)
+        # Clear existing vector store if requested
+        if clear_existing and os.path.exists(self.persist_directory):
+            import shutil
+            print(f"Clearing existing vector store at {self.persist_directory}")
+            shutil.rmtree(self.persist_directory)
+        
         self.llm = ChatAnthropic(
             anthropic_api_key=os.getenv("ANTHROPIC_API_KEY"),
             model_name="claude-3-5-sonnet-20241022"
         )
         
-        # Text splitter for document processing
         self.text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=1000,
             chunk_overlap=200
         )
 
-    # Define the load_documents method
     def load_documents(self, resume_path: str, template_path: str) -> None:
         """Load and process resume and cover letter template."""
         try:
@@ -41,36 +44,46 @@ class CoverLetterGenerator:
                 resume_loader = PyPDFLoader(resume_path)
             else:
                 resume_loader = TextLoader(resume_path)
-            resume_doc = resume_loader.load()
+            resume_docs = resume_loader.load()
             
-            if not resume_doc:
+            # Add metadata to resume documents
+            for doc in resume_docs:
+                doc.metadata["source_type"] = "resume"
+            
+            if not resume_docs:
                 raise ValueError(f"Failed to load resume from {resume_path}")
             
-            print(f"Successfully loaded resume. Content length: {len(resume_doc[0].page_content)}")
+            print(f"Successfully loaded resume. Content length: {len(resume_docs[0].page_content)}")
             
-            # Load single cover letter template
+            # Load template
             print(f"Loading template from: {template_path}")
             if template_path.endswith('.pdf'):
                 template_loader = PyPDFLoader(template_path)
             else:
                 template_loader = TextLoader(template_path)
-            template_doc = template_loader.load()
+            template_docs = template_loader.load()
             
-            if not template_doc:
+            # Add metadata to template documents
+            for doc in template_docs:
+                doc.metadata["source_type"] = "template"
+            
+            if not template_docs:
                 raise ValueError(f"Failed to load template from {template_path}")
             
-            print(f"Successfully loaded template from: {template_path}")
+            print(f"Successfully loaded template. Content length: {len(template_docs[0].page_content)}")
             
             # Process all documents
-            all_docs = resume_doc + template_doc
-            
+            all_docs = resume_docs + template_docs
             splits = self.text_splitter.split_documents(all_docs)
             
+            # Create new vector store
             self.vector_store = Chroma.from_documents(
                 documents=splits,
                 embedding=self.embeddings,
-                persist_directory="./data"
+                persist_directory=self.persist_directory
             )
+            
+            print(f"Vector store created with {len(splits)} document chunks")
                 
         except Exception as e:
             print(f"Error loading documents: {str(e)}")
@@ -82,26 +95,37 @@ class CoverLetterGenerator:
         if not self.vector_store:
             raise ValueError("Vector store not initialized. Please load documents first.")
         
-        # Retrieve resume content with more specific query
+        # Retrieve resume content with updated filter
         relevant_docs = self.vector_store.similarity_search(
             job_description,
-            k=1,
-            filter={"source": "resume"}
+            k=2,
+            filter={"source_type": "resume"}
         )
         
         if not relevant_docs:
             raise ValueError("No resume content found in vector store")
         
-        print(f"Found {len(relevant_docs)} relevant resume sections")
+        print("\n=== Debug: Retrieved Resume Content ===")
+        for i, doc in enumerate(relevant_docs):
+            print(f"\nResume Section {i+1}:")
+            print(doc.page_content)
+            print(f"Metadata: {doc.metadata}")
+        print("===================================\n")
         
         # Retrieve the cover letter template
-        template_doc = self.vector_store.similarity_search(
+        template_docs = self.vector_store.similarity_search(
             "cover letter template",
-            k=1,  # Get the single template
-            filter={"source": "template"}
+            k=1,
+            filter={"source_type": "template"}
         )
         
-        # Create a combined prompt that uses the template as an example
+        print("\n=== Debug: Retrieved Template Content ===")
+        if template_docs:
+            print(template_docs[0].page_content)
+            print(f"Metadata: {template_docs[0].metadata}")
+        print("===================================\n")
+        
+        # Create the prompt as before...
         prompt = PromptTemplate(
             input_variables=["resume_content", "template", "job_description", "company_name"],
             template="""
@@ -127,12 +151,21 @@ class CoverLetterGenerator:
         # Create a language model chain
         chain = prompt | self.llm
         
-        return chain.invoke({
+        # Print the actual input being sent to the LLM
+        input_data = {
             "resume_content": "\n".join(doc.page_content for doc in relevant_docs),
-            "template": template_doc[0].page_content if template_doc else "",
+            "template": template_docs[0].page_content if template_docs else "",
             "job_description": job_description,
             "company_name": company_name
-        }).content
+        }
+        
+        print("\n=== Debug: Final Input to LLM ===")
+        for key, value in input_data.items():
+            print(f"\n{key.upper()}:")
+            print(value[:200] + "..." if len(value) > 200 else value)
+        print("===================================\n")
+        
+        return chain.invoke(input_data).content
 
     # Define the save_cover_letter method
     def save_cover_letter(self, cover_letter: str, output_path: str) -> None:
@@ -142,7 +175,7 @@ class CoverLetterGenerator:
             f.write(cover_letter)
 
 # Initialize the generator
-generator = CoverLetterGenerator()
+generator = CoverLetterGenerator(clear_existing=True)
 
 # Load your documents with a single template
 generator.load_documents(
