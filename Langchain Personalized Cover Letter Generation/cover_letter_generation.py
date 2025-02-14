@@ -1,4 +1,5 @@
 import os
+import datetime
 from typing import Dict, List
 from dotenv import load_dotenv
 from langchain_community.document_loaders import PyPDFLoader, TextLoader
@@ -31,8 +32,11 @@ class CoverLetterGenerator:
         )
         
         self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=1000,
-            chunk_overlap=200
+            chunk_size=500,  # Smaller chunks capture more granular information
+            chunk_overlap=400,  # Large overlap ensures context continuity
+            length_function=len,
+            separators=["\n\n", "\n", " ", ""],  # More granular separation
+            is_separator_regex=False
         )
 
     def load_documents(self, resume_path: str, template_path: str) -> None:
@@ -88,84 +92,112 @@ class CoverLetterGenerator:
         except Exception as e:
             print(f"Error loading documents: {str(e)}")
             raise
-
+    
     # Define the generate_cover_letter method
     def generate_cover_letter(self, job_description: str, company_name: str) -> str:
         """Generate a personalized cover letter based on the template."""
-        if not self.vector_store:
-            raise ValueError("Vector store not initialized. Please load documents first.")
+
+        # Create experiment_store directory if it doesn't exist
+        experiment_dir = "experiment_debugging_store"
+        os.makedirs(experiment_dir, exist_ok=True)
         
-        # Retrieve resume content with updated filter
-        relevant_docs = self.vector_store.similarity_search(
-            job_description,
-            k=2,
-            filter={"source_type": "resume"}
-        )
+        # Create a timestamp for the experiment
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        experiment_file = os.path.join(experiment_dir, f"debug_log_{timestamp}.txt")
         
-        if not relevant_docs:
-            raise ValueError("No resume content found in vector store")
-        
-        print("\n=== Debug: Retrieved Resume Content ===")
-        for i, doc in enumerate(relevant_docs):
-            print(f"\nResume Section {i+1}:")
-            print(doc.page_content)
-            print(f"Metadata: {doc.metadata}")
-        print("===================================\n")
-        
-        # Retrieve the cover letter template
-        template_docs = self.vector_store.similarity_search(
-            "cover letter template",
-            k=1,
-            filter={"source_type": "template"}
-        )
-        
-        print("\n=== Debug: Retrieved Template Content ===")
-        if template_docs:
-            print(template_docs[0].page_content)
-            print(f"Metadata: {template_docs[0].metadata}")
-        print("===================================\n")
-        
-        # Create the prompt as before...
-        prompt = PromptTemplate(
-            input_variables=["resume_content", "template", "job_description", "company_name"],
-            template="""
-            Using the following information:
+        with open(experiment_file, 'w', encoding='utf-8') as f:
+            f.write("=== Cover Letter Generation Debug Log ===\n\n")
             
-            Resume Content: {resume_content}
+            if not self.vector_store:
+                raise ValueError("Vector store not initialized. Please load documents first.")
             
-            Example Cover Letter Template:
-            {template}
+            # Retrieve resume content
+            f.write("1. RETRIEVING RESUME CONTENT\n")
+            f.write("-" * 50 + "\n")
+            relevant_docs = self.vector_store.similarity_search(
+                job_description,
+                k=2,
+                filter={"source_type": "resume"}
+            )
             
-            Job Description: {job_description}
-            Company: {company_name}
+            if not relevant_docs:
+                raise ValueError("No resume content found in vector store")
             
-            Study the style and approach of the example template provided, and generate ONE optimized cover letter that:
-            1. Incorporates the best elements from the example template
-            2. Highlights relevant experience from the resume that matches the job description
-            3. Demonstrates enthusiasm for the specific company
-            4. Maintains a professional tone
-            5. Has a maximum length of 500 words (a single page maximum)
-            """
-        )
-        
-        # Create a language model chain
-        chain = prompt | self.llm
-        
-        # Print the actual input being sent to the LLM
-        input_data = {
-            "resume_content": "\n".join(doc.page_content for doc in relevant_docs),
-            "template": template_docs[0].page_content if template_docs else "",
-            "job_description": job_description,
-            "company_name": company_name
-        }
-        
-        print("\n=== Debug: Final Input to LLM ===")
-        for key, value in input_data.items():
-            print(f"\n{key.upper()}:")
-            print(value[:200] + "..." if len(value) > 200 else value)
-        print("===================================\n")
-        
-        return chain.invoke(input_data).content
+            f.write(f"Found {len(relevant_docs)} relevant resume sections\n\n")
+            for i, doc in enumerate(relevant_docs):
+                f.write(f"Resume Section {i+1}:\n")
+                f.write(doc.page_content + "\n")
+                f.write(f"Metadata: {doc.metadata}\n\n")
+            
+            # Retrieve template
+            f.write("\n2. RETRIEVING TEMPLATE\n")
+            f.write("-" * 50 + "\n")
+            template_docs = self.vector_store.similarity_search(
+                "cover letter template",
+                k=1,
+                filter={"source_type": "template"}
+            )
+            
+            if template_docs:
+                f.write("Template Content:\n")
+                f.write(template_docs[0].page_content + "\n")
+                f.write(f"Metadata: {template_docs[0].metadata}\n")
+            
+            # Prepare input for LLM
+            input_data = {
+                "resume_content": "\n".join(doc.page_content for doc in relevant_docs),
+                "template": template_docs[0].page_content if template_docs else "",
+                "job_description": job_description,
+                "company_name": company_name
+            }
+            
+            f.write("\n3. INPUT TO LLM\n")
+            f.write("-" * 50 + "\n")
+            for key, value in input_data.items():
+                f.write(f"\n{key.upper()}:\n")
+                f.write(value + "\n")
+                f.write("-" * 25 + "\n")
+            
+            # Generate the cover letter
+            f.write("\n4. GENERATING COVER LETTER\n")
+            f.write("-" * 50 + "\n")
+            
+            # Create the prompt
+            prompt = PromptTemplate(
+                input_variables=["resume_content", "template", "job_description", "company_name"],
+                template="""
+                Using the following information:
+                
+                Resume Content: {resume_content}
+                
+                Example Cover Letter Template:
+                {template}
+                
+                Job Description: {job_description}
+                Company: {company_name}
+                
+                Study the style and approach of the example template provided, and generate ONE optimized cover letter that:
+                1. Incorporates the best elements from the example template
+                2. Highlights relevant experience from the resume that matches the job description
+                3. Demonstrates enthusiasm for the specific company
+                4. Maintains a professional tone
+                5. Has a maximum length of 500 words (a single page maximum)
+                """
+            )
+            
+            # Create a language model chain
+            chain = prompt | self.llm
+            
+            # Generate the cover letter
+            result = chain.invoke(input_data).content
+            
+            f.write("\n5. GENERATED COVER LETTER\n")
+            f.write("-" * 50 + "\n")
+            f.write(result + "\n")
+            
+            print(f"Debug log saved to: {experiment_file}")
+            
+            return result
 
     # Define the save_cover_letter method
     def save_cover_letter(self, cover_letter: str, output_path: str) -> None:
@@ -190,7 +222,7 @@ with open("document_store/job_description.txt", "r", encoding='utf-8') as file:
 # Generate a single optimized cover letter based on the template
 cover_letter = generator.generate_cover_letter(
     job_description=job_description,
-    company_name="Aigens"
+    company_name="PT. BNI Life Insurance"
 )
 
 # Save the generated cover letter

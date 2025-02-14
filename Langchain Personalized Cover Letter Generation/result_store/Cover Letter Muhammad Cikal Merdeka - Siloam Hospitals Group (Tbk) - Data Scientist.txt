@@ -1,0 +1,37 @@
+Kepada Yth.  
+Hiring Manager  
+PT. BNI Life Insurance  
+
+Dengan hormat,  
+Saya menulis surat ini untuk menyatakan ketertarikan saya pada posisi Data Analytic (Project Based) di  
+PT. BNI Life Insurance.
+
+Visi PT BNI Life Insurance untuk menyediakan produk asuransi yang beragam dan terintegrasi dengan  
+pelayanan keuangan komprehensif sangat menginspirasi saya. Saya yakin dapat berkontribusi dalam  
+mengoptimalkan pengambilan keputusan berbasis data untuk meningkatkan layanan asuransi yang  
+menyentuh setiap aspek kehidupan nasabah BNI Life.
+
+Selama pengalaman internship saya di Kimia Farma, saya telah mengembangkan keahlian dalam  
+desain data mart dan eksekusi proses ETL menggunakan BigQuery, serta merancang dashboard dengan  
+Looker Studio untuk mengidentifikasi peluang peningkatan sebesar 22% di cabang-cabang farmasi  
+tertentu. Proyek ini memberikan saya pemahaman berharga tentang analisis data di bidang kesehatan  
+dan farmasi, yang sejalan dengan kebutuhan operasional di BNI Life.
+
+Pengalaman saya di Evermos menekankan kemampuan saya untuk berkolaborasi dalam tim lintas  
+fungsi, termasuk dengan analis data senior dan manajer keuangan, untuk mendukung proses validasi  
+data selama audit perusahaan. Saya menggunakan berbagai tools seperti Python, SQL, dan Snowflake  
+dalam analisis yang kompleks, meningkatkan performa dengan pengetahuan dalam analytics  
+engineering, yang saya yakin relevan dengan kebutuhan data BNI Life.
+
+Pendidikan saya dalam bidang Ilmu Komputer dan pengalaman mengelola data skala besar serta  
+mengembangkan model analitik menyediakan dasar yang kuat dalam menerapkan analisis statistik dan  
+data mining di BNI Life. Keahlian saya dalam scripting dengan Python, pengetahuan mendalam tentang  
+framework seperti TensorFlow, dan pengalaman dalam mengelola cluster Kubernetes mendukung  
+kemampuan saya untuk memberikan nilai tambah yang signifikan pada operasi data PT. BNI Life  
+Insurance.
+
+Saya berharap dapat mendiskusikan lebih lanjut bagaimana kontribusi saya dapat mendukung BNI Life  
+dalam memberikan layanan asuransi yang lebih baik dan terintegrasi bagi para nasabah.  
+
+Hormat saya,  
+Muhammad Cikal Merdeka
