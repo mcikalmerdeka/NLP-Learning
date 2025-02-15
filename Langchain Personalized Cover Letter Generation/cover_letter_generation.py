@@ -1,24 +1,31 @@
 import os
 import datetime
-from typing import Dict, List
 from dotenv import load_dotenv
-from langchain_community.document_loaders import PyPDFLoader, TextLoader
+from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.vectorstores import Chroma
-from langchain_openai import OpenAIEmbeddings
+from langchain_chroma import Chroma
+from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_anthropic import ChatAnthropic
-from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
-from langchain.schema import Document
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.runnables import RunnablePassthrough
+
+# """
+# This is the more like the experimentation and debugging version of the code implementation for the CoverLetterGenerator class. 
+# This version of the code implementation is more verbose and includes debugging information to help identify issues during the cover letter generation process.
+# The code includes detailed logging of the steps involved in the cover letter generation process, including the retrieval of resume content, template content, and the final generated cover letter.
+# The cover_letter_generation_2.py script is the more refined version of the code implementation without the debugging code.
+# """
+
+# Load environment variables
+load_dotenv()
 
 # Define the CoverLetterGenerator class
 class CoverLetterGenerator:
-    def __init__(self, clear_existing=True):
-        load_dotenv()
+    def __init__(self, resume_path, template_path, clear_existing=True): 
         
-        self.embeddings = OpenAIEmbeddings(api_key=os.getenv("OPENAI_API_KEY"), model="text-embedding-3-large")
-        self.vector_store = None
-        self.persist_directory = "./data"
+        # Initialize embeddings and vector store
+        self.embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
+        self.persist_directory = "./chroma_db"
         
         # Clear existing vector store if requested
         if clear_existing and os.path.exists(self.persist_directory):
@@ -26,71 +33,60 @@ class CoverLetterGenerator:
             print(f"Clearing existing vector store at {self.persist_directory}")
             shutil.rmtree(self.persist_directory)
         
-        self.llm = ChatAnthropic(
-            anthropic_api_key=os.getenv("ANTHROPIC_API_KEY"),
-            model_name="claude-3-5-sonnet-20241022"
-        )
-        
-        self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=500,  # Smaller chunks capture more granular information
-            chunk_overlap=400,  # Large overlap ensures context continuity
-            length_function=len,
-            separators=["\n\n", "\n", " ", ""],  # More granular separation
-            is_separator_regex=False
-        )
+        # Initialize LLM (using OpenAI's GPT-4o, but can be switched to Anthropic)
+        self.llm = ChatOpenAI(model="gpt-4o")  # Alternatively use Anthropic: ChatAnthropic(model="claude-3-opus-20240229")
 
-    def load_documents(self, resume_path: str, template_path: str) -> None:
-        """Load and process resume and cover letter template."""
+        # Load and process documents
+        self.resume_retriever = self._prepare_resume(resume_path)
+        self.cover_letter_example = self._load_cover_letter_example(template_path)
+            
+    # Prepare resume retriever
+    def _prepare_resume(self, resume_path: str) -> None:
+        """Prepare the resume retriever."""
+
         try:
-            # Load resume
+            # Load resume document
             print(f"Loading resume from: {resume_path}")
-            if resume_path.endswith('.pdf'):
-                resume_loader = PyPDFLoader(resume_path)
-            else:
-                resume_loader = TextLoader(resume_path)
-            resume_docs = resume_loader.load()
-            
-            # Add metadata to resume documents
-            for doc in resume_docs:
-                doc.metadata["source_type"] = "resume"
-            
-            if not resume_docs:
-                raise ValueError(f"Failed to load resume from {resume_path}")
-            
-            print(f"Successfully loaded resume. Content length: {len(resume_docs[0].page_content)}")
-            
-            # Load template
-            print(f"Loading template from: {template_path}")
-            if template_path.endswith('.pdf'):
-                template_loader = PyPDFLoader(template_path)
-            else:
-                template_loader = TextLoader(template_path)
-            template_docs = template_loader.load()
-            
-            # Add metadata to template documents
-            for doc in template_docs:
-                doc.metadata["source_type"] = "template"
-            
-            if not template_docs:
-                raise ValueError(f"Failed to load template from {template_path}")
-            
-            print(f"Successfully loaded template. Content length: {len(template_docs[0].page_content)}")
-            
-            # Process all documents
-            all_docs = resume_docs + template_docs
-            splits = self.text_splitter.split_documents(all_docs)
-            
-            # Create new vector store
+            loader = PyPDFLoader(resume_path)
+            resume_data = loader.load()
+            print(f"Successfully loaded resume. Content length: {len(resume_data[0].page_content)}")
+
+            # Split document into chunks
+            print("Splitting resume into chunks")
+            text_splitter = RecursiveCharacterTextSplitter(
+                chunk_size=1000,
+                chunk_overlap=200
+            )
+            splits = text_splitter.split_documents(resume_data)
+            print(f"Resume split into {len(splits)} chunks")
+
+            # Create vector store for resume
             self.vector_store = Chroma.from_documents(
                 documents=splits,
                 embedding=self.embeddings,
-                persist_directory=self.persist_directory
+                collection_name="resume",
+                persist_directory="./chroma_db"
             )
-            
-            print(f"Vector store created with {len(splits)} document chunks")
-                
+
+            return self.vector_store.as_retriever(search_kwargs={"k": 3})
         except Exception as e:
-            print(f"Error loading documents: {str(e)}")
+            print(f"Error preparing resume retriever: {str(e)}")
+            raise
+
+    # Load cover letter example
+    def _load_cover_letter_example(self, template_path: str) -> str:
+        """Load the cover letter example."""
+
+        try:
+            # Load cover letter example
+            print(f"Loading cover letter example from: {template_path}")
+            loader = PyPDFLoader(template_path)
+            example = loader.load()
+            print(f"Successfully loaded cover letter example. Content length: {len(example[0].page_content)}")
+            
+            return example[0].page_content  # Get the text content
+        except Exception as e:
+            print(f"Error loading cover letter example: {str(e)}")
             raise
     
     # Define the generate_cover_letter method
@@ -105,125 +101,114 @@ class CoverLetterGenerator:
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         experiment_file = os.path.join(experiment_dir, f"debug_log_{timestamp}.txt")
         
+        # Write the debug log
         with open(experiment_file, 'w', encoding='utf-8') as f:
             f.write("=== Cover Letter Generation Debug Log ===\n\n")
             
-            if not self.vector_store:
-                raise ValueError("Vector store not initialized. Please load documents first.")
-            
-            # Retrieve resume content
+            # Retrieve resume content using the retriever
             f.write("1. RETRIEVING RESUME CONTENT\n")
             f.write("-" * 50 + "\n")
-            relevant_docs = self.vector_store.similarity_search(
-                job_description,
-                k=2,
-                filter={"source_type": "resume"}
-            )
+            relevant_docs = self.resume_retriever.invoke(job_description)
             
             if not relevant_docs:
                 raise ValueError("No resume content found in vector store")
             
-            f.write(f"Found {len(relevant_docs)} relevant resume sections\n\n")
-            for i, doc in enumerate(relevant_docs):
-                f.write(f"Resume Section {i+1}:\n")
+            f.write("Resume Content:\n")
+            for doc in relevant_docs:
                 f.write(doc.page_content + "\n")
-                f.write(f"Metadata: {doc.metadata}\n\n")
-            
-            # Retrieve template
-            f.write("\n2. RETRIEVING TEMPLATE\n")
+                f.write(f"Metadata: {doc.metadata}\n")
+                
+            # Get template content
+            f.write("\n2. TEMPLATE CONTENT\n")
             f.write("-" * 50 + "\n")
-            template_docs = self.vector_store.similarity_search(
-                "cover letter template",
-                k=1,
-                filter={"source_type": "template"}
-            )
-            
-            if template_docs:
-                f.write("Template Content:\n")
-                f.write(template_docs[0].page_content + "\n")
-                f.write(f"Metadata: {template_docs[0].metadata}\n")
+            f.write("Template Content:\n")
+            f.write(self.cover_letter_example + "\n")
             
             # Prepare input for LLM
             input_data = {
                 "resume_content": "\n".join(doc.page_content for doc in relevant_docs),
-                "template": template_docs[0].page_content if template_docs else "",
+                "template": self.cover_letter_example,
                 "job_description": job_description,
                 "company_name": company_name
             }
             
             f.write("\n3. INPUT TO LLM\n")
             f.write("-" * 50 + "\n")
-            for key, value in input_data.items():
-                f.write(f"\n{key.upper()}:\n")
-                f.write(value + "\n")
-                f.write("-" * 25 + "\n")
+            f.write(f"Resume Content:\n{input_data['resume_content']}\n")
+            f.write(f"Template:\n{input_data['template']}\n")
+            f.write(f"Job Description:\n{input_data['job_description']}\n")
+            f.write(f"Company Name: {input_data['company_name']}\n")
             
             # Generate the cover letter
             f.write("\n4. GENERATING COVER LETTER\n")
             f.write("-" * 50 + "\n")
             
             # Create the prompt
-            prompt = PromptTemplate(
-                input_variables=["resume_content", "template", "job_description", "company_name"],
-                template="""
-                Using the following information:
-                
-                Resume Content: {resume_content}
-                
-                Example Cover Letter Template:
-                {template}
-                
-                Job Description: {job_description}
-                Company: {company_name}
-                
-                Study the style and approach of the example template provided, and generate ONE optimized cover letter that:
-                1. Incorporates the best elements from the example template
-                2. Highlights relevant experience from the resume that matches the job description
-                3. Demonstrates enthusiasm for the specific company
-                4. Maintains a professional tone
-                5. Has a maximum length of 500 words (a single page maximum)
-                """
+            template = """You're an expert cover letter writer. Use the following information to create a personalized cover letter:
+            
+            Resume Context: {context}
+            
+            Job Description: {job_description}
+            
+            Follow this exact format and style from the example cover letter:
+            {example_style}
+
+            Please ensure the cover letter does not exceed 500 words, which is the maximum word count for a single page Word document.
+            
+            Generate the cover letter:"""
+
+            # Create the prompt
+            prompt = ChatPromptTemplate.from_template(template)
+
+            # Create the processing chain
+            chain = (
+                {
+                    "context": self.resume_retriever,
+                    "job_description": RunnablePassthrough(),
+                    "example_style": lambda x: self.cover_letter_example
+                }
+                | prompt
+                | self.llm
             )
             
-            # Create a language model chain
-            chain = prompt | self.llm
-            
-            # Generate the cover letter
-            result = chain.invoke(input_data).content
+            result = chain.invoke(job_description)
             
             f.write("\n5. GENERATED COVER LETTER\n")
             f.write("-" * 50 + "\n")
-            f.write(result + "\n")
+            f.write(result.content + "\n")
             
             print(f"Debug log saved to: {experiment_file}")
             
-            return result
+            return result.content
 
     # Define the save_cover_letter method
-    def save_cover_letter(self, cover_letter: str, output_path: str) -> None:
+    def save_cover_letter(self, cover_letter: str, company_name: str, job_title: str) -> None:
         """Save the generated cover letter to a file."""
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
-        with open(output_path, 'w') as f:
-            f.write(cover_letter)
 
-# Initialize the generator
-generator = CoverLetterGenerator(clear_existing=True)
+        # Create the directory if it doesn't exist
+        os.makedirs("result_store", exist_ok=True)
+        
+        # Create the file path for each cover letter
+        file_path = f"result_store/Cover Letter Muhammad Cikal Merdeka - {company_name} - {job_title}.txt"
 
-# Load your documents with a single template
-generator.load_documents(
-    resume_path="document_store/resume_example/Resume_Muhammad Cikal Merdeka.pdf",
-    template_path="document_store/cover_letter_example/Cover Letter Muhammad Cikal Merdeka - Siloam Hospitals Group (Tbk)  - Data Analyst.pdf"
-)
+        with open(file_path, "w", encoding='utf-8') as file:
+            file.write(cover_letter)
+        return file_path
 
-# Read job description from a file
-with open("document_store/job_description.txt", "r", encoding='utf-8') as file:
-    job_description = file.read()
-
-# Generate a single optimized cover letter based on the template
-cover_letter = generator.generate_cover_letter(
-    job_description=job_description,
-    company_name="PT. BNI Life Insurance"
-)
-
-# Save the generated cover letter
-generator.save_cover_letter(cover_letter, "result_store/generated_cover_letter.txt")
+# Code implementation
+if __name__ == "__main__":
+    generator = CoverLetterGenerator(
+        clear_existing=True,
+        resume_path="document_store/resume_example/Resume_Muhammad Cikal Merdeka.pdf",
+        template_path="document_store/cover_letter_example/Cover Letter Muhammad Cikal Merdeka - Siloam Hospitals Group (Tbk)  - Data Analyst.pdf"  # Ensure this path is correct
+    )
+    
+    # Read job description from a file
+    with open("document_store/job_description.txt", "r", encoding='utf-8') as file:
+        job_description = file.read()
+    
+    # Generate a single optimized cover letter based on the template
+    result = generator.generate_cover_letter(job_description, "PT. BNI Life Insurance")
+    
+    # Save the generated cover letter
+    generator.save_cover_letter(result, company_name="PT. BNI Life Insurance", job_title="Data Analytic (Project Based)")
