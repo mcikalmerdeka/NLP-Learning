@@ -1,0 +1,456 @@
+=== Cover Letter Generation Debug Log ===
+
+1. RETRIEVING RESUME CONTENT
+--------------------------------------------------
+Found 2 relevant resume sections
+
+Resume Section 1:
+transaction pharmacy branches and increase transaction volume by 15% in underperforming regions. 
+• Presented data insights to stakeholders, proposing strategies to increase sales of underperforming product 
+categories by 12% through targeted marketing. 
+ 
+Bank Muamalat Indonesia | Banking 
+Business Intelligence Analyst (Project-Based Internship)                April 2024 – May 2024 
+• Implemented basic to advanced Excel formulas for effective data analysis in credit risks case studies. 
+• Executed SQL queries in BigQuery to consolidate $1.8M in sales data across multiple product categories over a 
+2-year period, enhancing the bank's understanding of client business performance. 
+• Developed a customer analysis dashboard in Looker Studio with time series sales and quantity trends, providing 
+insights to help our corporate client reduce churn and increase retention in top-performing categories. 
+ 
+Bandung Institute of Technology | Research & Development
+Metadata: {'creationdate': '2025-01-12T11:58:02+08:00', 'creator': 'Microsoft® Word 2021', 'moddate': '2025-01-12T11:58:02+08:00', 'page': 0, 'page_label': '1', 'producer': 'Microsoft® Word 2021', 'source': 'document_store/resume_example/Resume_Muhammad Cikal Merdeka.pdf', 'source_type': 'resume', 'total_pages': 2}
+
+Resume Section 2:
+Data Analyst Internship            May 2024 – October 2024 
+• Collaborated with cross -functional teams, including senior data analysts and finance -accounting managers, to 
+support data preparation and validation efforts during the company audit process. 
+• Analyzed data related to reconciliation processes for Accounts Receivable (AR) and Accounts Payable (AP) 
+across various business operations, utilizing mostly Python, SQL, Snowflake, Google Sheets, and Metabase on a 
+daily basis. Additionally, gained analytics engineering experience with dbt and Apache Airflow. 
+ 
+Kimia Farma | Pharmaceutical & Healthcare 
+Big Data Analyst (Project-Based Internship)              May 2024 – June 2024 
+• Designed data marts and executed ETL process in BigQuery for the provided datasets. 
+• Developed a Looker Studio sales dashboard, identifying opportunities to boost sales by 2 2% in high-rated, low-
+transaction pharmacy branches and increase transaction volume by 15% in underperforming regions.
+Metadata: {'creationdate': '2025-01-12T11:58:02+08:00', 'creator': 'Microsoft® Word 2021', 'moddate': '2025-01-12T11:58:02+08:00', 'page': 0, 'page_label': '1', 'producer': 'Microsoft® Word 2021', 'source': 'document_store/resume_example/Resume_Muhammad Cikal Merdeka.pdf', 'source_type': 'resume', 'total_pages': 2}
+
+
+2. RETRIEVING TEMPLATE
+--------------------------------------------------
+Template Content:
+Kepada  Yth.  
+Hiring  Manager  
+Siloam  Hospitals  Group  
+ 
+Dengan  hormat,  
+Saya  menulis  surat  ini  untuk  menyatakan  ketertarikan  saya  pada  posisi  Data  Analyst  di  
+Siloam
+ 
+Hospitals
+ 
+Group.
+ 
+Visi
+ 
+Siloam
+ 
+untuk
+ 
+menyediakan
+ 
+layanan
+ 
+kesehatan
+ 
+berkualitas
+ 
+internasional
+ 
+yang
+ 
+didukung
+ 
+oleh
+ 
+kasih
+ 
+ilahi
+ 
+sangat
+ 
+menginspirasi
+ 
+saya,
+ 
+dan
+ 
+saya
+ 
+yakin
+ 
+dapat
+ 
+berkontribusi
+ 
+dalam
+ 
+mengoptimalkan
+ 
+pengambilan
+ 
+keputusan
+ 
+berbasis
+ 
+data
+ 
+untuk
+ 
+meningkatkan
+ 
+layanan
+ 
+kesehatan
+ 
+bagi
+ 
+masyarakat
+ 
+Indonesia.
+ 
+Melalui  pengalaman  internship  saya  di  Evermos,  saya  telah  mengembangkan  keahlian  
+dalam
+ 
+mengumpulkan,
+ 
+membersihkan,
+ 
+dan
+ 
+menganalisis
+ 
+data
+ 
+menggunakan
+ 
+berbagai
+ 
+tools
+ 
+seperti
+ 
+Python,
+ 
+SQL,
+ 
+dan
+ 
+sistem
+ 
+visualisasi
+ 
+data.
+ 
+Saya
+ 
+bekerja
+ 
+sama
+ 
+dengan
+ 
+tim
+ 
+lintas
+ 
+fungsi
+ 
+untuk
+ 
+memvalidasi
+ 
+data
+ 
+dan
+ 
+menghasilkan
+ 
+insight
+ 
+yang
+ 
+actionable,
+ 
+yang
+ 
+sangat
+ 
+relevan
+ 
+dengan
+Metadata: {'creationdate': '', 'creator': 'PyPDF', 'page': 0, 'page_label': '1', 'producer': 'Skia/PDF m134 Google Docs Renderer', 'source': 'document_store/cover_letter_example/Cover Letter Muhammad Cikal Merdeka - Siloam Hospitals Group (Tbk)  - Data Analyst.pdf', 'source_type': 'template', 'title': 'Cover Letter Muhammad Cikal Merdeka - Siloam Hospitals Group (Tbk)  - Data Analyst', 'total_pages': 1}
+
+3. INPUT TO LLM
+--------------------------------------------------
+
+RESUME_CONTENT:
+transaction pharmacy branches and increase transaction volume by 15% in underperforming regions. 
+• Presented data insights to stakeholders, proposing strategies to increase sales of underperforming product 
+categories by 12% through targeted marketing. 
+ 
+Bank Muamalat Indonesia | Banking 
+Business Intelligence Analyst (Project-Based Internship)                April 2024 – May 2024 
+• Implemented basic to advanced Excel formulas for effective data analysis in credit risks case studies. 
+• Executed SQL queries in BigQuery to consolidate $1.8M in sales data across multiple product categories over a 
+2-year period, enhancing the bank's understanding of client business performance. 
+• Developed a customer analysis dashboard in Looker Studio with time series sales and quantity trends, providing 
+insights to help our corporate client reduce churn and increase retention in top-performing categories. 
+ 
+Bandung Institute of Technology | Research & Development
+Data Analyst Internship            May 2024 – October 2024 
+• Collaborated with cross -functional teams, including senior data analysts and finance -accounting managers, to 
+support data preparation and validation efforts during the company audit process. 
+• Analyzed data related to reconciliation processes for Accounts Receivable (AR) and Accounts Payable (AP) 
+across various business operations, utilizing mostly Python, SQL, Snowflake, Google Sheets, and Metabase on a 
+daily basis. Additionally, gained analytics engineering experience with dbt and Apache Airflow. 
+ 
+Kimia Farma | Pharmaceutical & Healthcare 
+Big Data Analyst (Project-Based Internship)              May 2024 – June 2024 
+• Designed data marts and executed ETL process in BigQuery for the provided datasets. 
+• Developed a Looker Studio sales dashboard, identifying opportunities to boost sales by 2 2% in high-rated, low-
+transaction pharmacy branches and increase transaction volume by 15% in underperforming regions.
+-------------------------
+
+TEMPLATE:
+Kepada  Yth.  
+Hiring  Manager  
+Siloam  Hospitals  Group  
+ 
+Dengan  hormat,  
+Saya  menulis  surat  ini  untuk  menyatakan  ketertarikan  saya  pada  posisi  Data  Analyst  di  
+Siloam
+ 
+Hospitals
+ 
+Group.
+ 
+Visi
+ 
+Siloam
+ 
+untuk
+ 
+menyediakan
+ 
+layanan
+ 
+kesehatan
+ 
+berkualitas
+ 
+internasional
+ 
+yang
+ 
+didukung
+ 
+oleh
+ 
+kasih
+ 
+ilahi
+ 
+sangat
+ 
+menginspirasi
+ 
+saya,
+ 
+dan
+ 
+saya
+ 
+yakin
+ 
+dapat
+ 
+berkontribusi
+ 
+dalam
+ 
+mengoptimalkan
+ 
+pengambilan
+ 
+keputusan
+ 
+berbasis
+ 
+data
+ 
+untuk
+ 
+meningkatkan
+ 
+layanan
+ 
+kesehatan
+ 
+bagi
+ 
+masyarakat
+ 
+Indonesia.
+ 
+Melalui  pengalaman  internship  saya  di  Evermos,  saya  telah  mengembangkan  keahlian  
+dalam
+ 
+mengumpulkan,
+ 
+membersihkan,
+ 
+dan
+ 
+menganalisis
+ 
+data
+ 
+menggunakan
+ 
+berbagai
+ 
+tools
+ 
+seperti
+ 
+Python,
+ 
+SQL,
+ 
+dan
+ 
+sistem
+ 
+visualisasi
+ 
+data.
+ 
+Saya
+ 
+bekerja
+ 
+sama
+ 
+dengan
+ 
+tim
+ 
+lintas
+ 
+fungsi
+ 
+untuk
+ 
+memvalidasi
+ 
+data
+ 
+dan
+ 
+menghasilkan
+ 
+insight
+ 
+yang
+ 
+actionable,
+ 
+yang
+ 
+sangat
+ 
+relevan
+ 
+dengan
+-------------------------
+
+JOB_DESCRIPTION:
+Data Analytic (Project Based)
+PT. BNI Life Insurance
+
+Company Description
+
+PT BNI Life Insurance (BNI Life) merupakan perusahaan asuransi yang menyediakan berbagai produk asuransi seperti Asuransi Kehidupan (Jiwa), Kesehatan, Pendidikan, Investasi, Pensiun dan Syariah. Dalam menyelenggarakan kegiatan usahanya, BNI Life telah memperoleh izin usaha di bidang Asuransi Jiwa Berdasarkan surat dari Menteri Keuangan Nomor 305/KMK.017/1997 tanggal 7 Juli 1997. Pendirian BNI Life, sejalan dengan kebutuhan perusahaan induknya, PT Bank Negara Indonesia (Persero) Tbk atau BNI, untuk menyediakan layanan dan jasa keuangan terpadu bagi semua nasabahnya (one-stop financial services)
+Pada tanggal 11 Maret 2014, Otoritas Jasa Keuangan (OJK) memberikan persetujuan perubahan kepemilikan saham PT BNI Life Insurance (”BNI Life”). Berdasarkan persetujuan tersebut pada tanggal 21 Maret 2014, BNI Life telah menyelenggarakan RUPSLB dengan agenda penerbitan saham baru sebanyak 120.279.633 lembar yang diambil seluruhnya oleh Sumitomo Life Insurance Company.
+Dengan pengalaman lebih dari 19 tahun, BNI Life terus meneguhkan komitmen untuk tidak hanya memberikan perlindungan secara finansial tetapi juga berupaya memberikan nilai tambah pada setiap sisi kehidupan Anda.
+Untuk mewujudkan misinya, BNI Life tengah mencari talenta-talenta handal yang dinamis, terampil dan bermotivasi tinggi.
+
+Job Description
+
+Pengumpulan Data
+Mengakses, membersihkan, dan mengintegrasikan data dari berbagai sumber.
+Menjamin kualitas, konsistensi, dan keamanan data yang digunakan.
+Analisis Data
+Melakukan analisis statistik dan data mining untuk mengidentifikasi pola dan tren.
+Menyusun laporan yang berfokus pada insight bisnis dan rekomendasi.
+Pengelolaan Infrastruktur Data
+Mengelola pipeline data menggunakan Kubernetes untuk memastikan efisiensi dan skalabilitas.
+Memantau dan mengoptimalkan performa cluster Kubernetes.
+Pengembangan Model Prediktif
+Menggunakan TensorFlow untuk membangun dan melatih model machine learning.
+Mengimplementasikan logika bisnis menggunakan Golang untuk mendukung pengolahan data atau integrasi model.
+Kolaborasi Antar Tim
+Bekerja sama dengan tim teknis untuk memahami kebutuhan infrastruktur.
+Berkomunikasi dengan stakeholder untuk menyelaraskan analisis data dengan kebutuhan bisnis.
+ 
+
+Qualification
+
+Gelar Sarjana di bidang Statistik, Ilmu Komputer, Teknik Informatika, atau jurusan terkait.
+Pengalaman kerja minimal 3 tahun di bidang analisis data atau pengembangan teknologi.
+Pengalaman dalam pengelolaan cluster Kubernetes.
+Pengetahuan mendalam tentang Golang untuk aplikasi skala besar.
+Pemahaman teknis tentang framework TensorFlow.
+ 
+
+Technical Skills
+
+Mahir menggunakan alat visualisasi data seperti Tableau, Power BI, atau lainnya.
+Pengalaman dengan database SQL/NoSQL (misalnya, PostgreSQL, MongoDB).
+Kemampuan scripting dengan Python atau R.
+Pengetahuan tentang platform cloud (misalnya, AWS, Google Cloud, atau Azure).
+-------------------------
+
+COMPANY_NAME:
+PT. BNI Life Insurance
+-------------------------
+
+4. GENERATING COVER LETTER
+--------------------------------------------------
+
+5. GENERATED COVER LETTER
+--------------------------------------------------
+Kepada Yth.
+Hiring Manager
+PT BNI Life Insurance
+
+Dengan hormat,
+
+Saya menulis surat ini untuk menyatakan ketertarikan saya pada posisi Data Analytic (Project Based) di PT BNI Life Insurance. Komitmen BNI Life dalam memberikan nilai tambah pada setiap sisi kehidupan nasabah melalui layanan asuransi yang komprehensif sangat menginspirasi saya, dan saya yakin dapat berkontribusi dalam mengoptimalkan pengambilan keputusan berbasis data untuk meningkatkan layanan asuransi bagi masyarakat Indonesia.
+
+Melalui pengalaman saya di berbagai institusi, saya telah mengembangkan keahlian yang relevan dengan kebutuhan posisi ini. Di Bank Muamalat Indonesia, saya berhasil mengeksekusi SQL queries di BigQuery untuk mengkonsolidasi data penjualan senilai $1.8M, yang menunjukkan kemampuan saya dalam mengakses dan mengintegrasikan data dari berbagai sumber. Selama di Bandung Institute of Technology, saya memperdalam pengalaman dengan berbagai tools analisis data seperti Python, SQL, dan platform visualisasi, serta mendapatkan exposure terhadap analytics engineering dengan dbt dan Apache Airflow.
+
+Di Kimia Farma, saya merancang data marts dan melaksanakan proses ETL, serta mengembangkan dashboard yang mengidentifikasi peluang peningkatan performa bisnis hingga 22%. Pengalaman ini menunjukkan kemampuan saya dalam melakukan analisis statistik dan menghasilkan insight bisnis yang actionable.
+
+Saya sangat antusias untuk dapat berkontribusi dalam:
+- Mengoptimalkan proses pengumpulan dan analisis data untuk mendukung pengambilan keputusan di BNI Life
+- Mengembangkan dashboard dan laporan yang memberikan insight bermakna bagi stakeholders
+- Berkolaborasi dengan tim lintas fungsi untuk menyelaraskan analisis data dengan kebutuhan bisnis
+
+Saya berharap dapat mendiskusikan lebih lanjut bagaimana latar belakang dan keterampilan saya dapat berkontribusi pada kesuksesan PT BNI Life Insurance.
+
+Terima kasih atas perhatian Bapak/Ibu.
+
+Hormat saya,
+[Nama Anda]
