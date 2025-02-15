@@ -8,6 +8,9 @@ from dotenv import load_dotenv
 
 # Personal reminder: Check this chat history for the source https://claude.ai/chat/e9afd21d-3e5f-4c6d-bcf1-0ad951654f44
 
+# Load environment variables
+load_dotenv()
+
 # Define the SearchAugmentedGeneration class
 class SearchAugmentedGeneration:
     def __init__(self, anthropic_api_key: str = None, serper_api_key: str = None):
@@ -18,8 +21,6 @@ class SearchAugmentedGeneration:
             anthropic_api_key: API key for Anthropic's Claude
             serper_api_key: API key for Serper (Google Search API)
         """
-        # Load environment variables
-        load_dotenv()
 
         # Get API keys from environment variables if not provided
         self.anthropic_api_key = anthropic_api_key or os.environ.get('ANTHROPIC_API_KEY')
