@@ -1,0 +1,21 @@
+Kepada Yth.  
+Hiring Manager  
+PT. BNI Life Insurance  
+
+Dengan hormat,  
+
+Saya menulis surat ini untuk menyatakan ketertarikan saya pada posisi Data Analytic (Project Based) di PT. BNI Life Insurance. Pengalaman dan dedikasi BNI Life dalam menyediakan berbagai produk asuransi serta komitmen untuk memberikan nilai tambah pada setiap sisi kehidupan Anda sangat menginspirasi saya. Saya yakin dapat berkontribusi dalam mengoptimalkan pengambilan keputusan berbasis data untuk meningkatkan layanan bagi para nasabah.
+
+Melalui pengalaman internship saya di Evermos, saya telah mengasah keahlian dalam mengakses, membersihkan, dan mengintegrasikan data dari berbagai sumber menggunakan tools seperti Python, SQL, dan Metabase. Saya bekerja sama dengan tim lintas fungsi untuk memvalidasi data dan menghasilkan insight yang actionable, yang sangat relevan dengan kebutuhan analisis data di BNI Life.
+
+Di Kimia Farma, saya menunjukkan kemampuan saya dalam mengidentifikasi tren dan pola dalam dataset melalui pengembangan dashboard Looker Studio yang berhasil meningkatkan performa penjualan sebesar 22% di cabang tertentu. Pengalaman ini melibatkan analisis data terkait produk kesehatan dan farmasi, memberikan saya pemahaman berharga yang dapat diterapkan dalam analisis data asuransi di BNI Life.
+
+Pengalaman saya di Bank Muamalat Indonesia membuktikan kemampuan saya dalam mengolah dan menganalisis data dalam skala besar, termasuk mengkonsolidasikan data senilai $1.8M menggunakan SQL dan tools visualisasi data. Keterampilan ini sangat sesuai dengan upaya BNI Life dalam menjamin kualitas, konsistensi, dan keamanan data yang digunakan.
+
+Latar belakang pendidikan saya dalam Fisika dan spesialisasi dalam Data Science telah membekali saya dengan fondasi yang kuat dalam analisis statistik dan pemecahan masalah. Pengalaman saya dalam kolaborasi tim dan presentasi data insights kepada berbagai stakeholder menunjukkan kemampuan komunikasi yang efektif, yang penting dalam berinteraksi dengan tim teknis serta stakeholder di BNI Life.
+
+Saya berharap dapat mendiskusikan lebih lanjut bagaimana kontribusi saya dapat membantu PT. BNI Life Insurance dalam mengoptimalkan infrastruktur data dan pengembangan model prediktif guna menyelaraskan analisis data dengan kebutuhan bisnis.
+
+Hormat saya,
+
+Muhammad Cikal Merdeka
