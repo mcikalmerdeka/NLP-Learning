@@ -1,7 +1,8 @@
 langchain
 langchain-openai
 langchain-anthropic
+langchain-community
+langchain-chroma
 chromadb
 python-dotenv
 pypdf
-langchain-community
