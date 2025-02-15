@@ -1,5 +1,4 @@
 .env
 venv/
-data/
-experiment_debugging_store/
 chroma_db/
+chroma_db_2
