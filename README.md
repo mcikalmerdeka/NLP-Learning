@@ -7,6 +7,7 @@
 
 ## E-Books and Other Reading Resources
 1. [Natural Language Processing with Python - Steven Bird, Ewan Klein, and Edward Loper](https://www.nltk.org/book/)
+2. [Word Embeddings Demo](https://www.cs.cmu.edu/~dst/WordEmbeddingDemo/tutorial.html)
 
 ## Useful and Interesting Videos
 
