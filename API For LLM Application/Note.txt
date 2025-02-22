@@ -1,0 +1,39 @@
+Source: https://claude.ai/chat/5625045e-85a2-43fd-8308-be7c49f30bcd
+
+---------------------------------------------------------------------------------------------------
+
+How can i solve this error?
+
+INFO:     127.0.0.1:59829 - "POST /generate?prompt=hello%20world HTTP/1.1" 422 Unprocessable Entity
+
+this is the json in postman
+
+{"detail":[{"type":"missing","loc":["body"],"msg":"Field required","input":null}]}
+
+
+Ah, now I see the specific error - it's saying the request body is missing but required. This means your FastAPI endpoint is expecting data in the request body, not just as a URL parameter.
+
+There are two ways to fix this:
+
+1. If you want to send the prompt as a request body (recommended approach):
+   - In Postman, go to the "Body" tab
+   - Select "raw" and "JSON"
+   - Send something like:
+   ```json
+   {
+       "prompt": "hello world"
+   }
+   ```
+
+2. Or if you want to keep using query parameters, you'll need to modify your FastAPI endpoint code.
+
+Could you share your FastAPI endpoint code from `main.py`? It probably looks something like:
+```python
+@app.post("/generate")
+async def generate(prompt: str = Body(...)):  # This is expecting a request body
+```
+
+Without seeing your endpoint code, I'd recommend trying the first approach - sending the prompt in the request body as JSON. Keep the method as POST, but move the data from the URL to the request body.
+
+
+---------------------------------------------------------------------------------------------------
