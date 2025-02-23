@@ -1,0 +1,8 @@
+Fix pandasai installation error due to Python version
+Source: https://chat.deepseek.com/a/chat/s/5aa1964d-099a-4287-9326-09d1fdd03b6f
+Source 2 : https://claude.ai/chat/49a0d986-8f5f-44cc-8c68-17920637928f
+
+-------------------------------------------------------------------------------------------
+
+pandasai documentation: https://docs.getpanda.ai/v3/getting-started
+-------------------------------------------------------------------------------------------
