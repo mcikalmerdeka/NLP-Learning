@@ -108,23 +108,27 @@ class CoverLetterGenerator:
         # Register Arial font
         pdfmetrics.registerFont(TTFont('Arial', 'arial.ttf'))
         
-        # Create document
+        # Create document with metadata
         doc = SimpleDocTemplate(
             file_path,
             pagesize=letter,
             rightMargin=72,
             leftMargin=72,
             topMargin=72,
-            bottomMargin=72
+            bottomMargin=72,
+            title=f"Cover Letter Muhammad Cikal Merdeka - {company_name} - {job_title}",
+            author="Muhammad Cikal Merdeka",
+            subject="Job Application Cover Letter",
         )
         
-        # Define style for justified text
+        # Define style for justified text with 1.15 line spacing
         style = ParagraphStyle(
             'CustomStyle',
             fontName='Arial',
             fontSize=11,
+            leading=14.15,
             alignment=TA_JUSTIFY,
-            spaceAfter=14
+            spaceAfter=14.15  # Same as leading for consistent paragraph spacing
         )
         
         # Split content into paragraphs and create story
