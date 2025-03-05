@@ -1,13 +1,13 @@
 import os
 import datetime
 from dotenv import load_dotenv
-from langchain_community.document_loaders import PyPDFLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_chroma import Chroma
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
-from langchain_anthropic import ChatAnthropic
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.runnables import RunnablePassthrough
+from langchain_community.document_loaders import PyPDFLoader         # Load PDF documents for processing
+from langchain_text_splitters import RecursiveCharacterTextSplitter  # Split text into smaller chunks
+from langchain_chroma import Chroma                                  # Create vector stores for documents 
+from langchain_openai import OpenAIEmbeddings, ChatOpenAI            # Load OpenAI models for text generation
+from langchain_anthropic import ChatAnthropic                        # Load Anthropic models for text generation
+from langchain_core.prompts import ChatPromptTemplate                # Create a prompt template 
+from langchain_core.runnables import RunnablePassthrough             # Create a runnable to pass through data
 
 # """
 # This is the more like the experimentation and debugging version of the code implementation for the CoverLetterGenerator class. 
