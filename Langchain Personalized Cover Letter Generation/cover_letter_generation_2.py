@@ -1,12 +1,20 @@
 import os
 from dotenv import load_dotenv
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_chroma import Chroma
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
-from langchain_anthropic import ChatAnthropic
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.runnables import RunnablePassthrough
+from langchain_community.document_loaders import PyPDFLoader         # Load PDF documents for processing
+from langchain_text_splitters import RecursiveCharacterTextSplitter  # Split text into smaller chunks
+from langchain_chroma import Chroma                                  # Create vector stores for documents 
+from langchain_openai import OpenAIEmbeddings, ChatOpenAI            # Load OpenAI models for text generation
+from langchain_anthropic import ChatAnthropic                        # Load Anthropic models for text generation
+from langchain_core.prompts import ChatPromptTemplate                # Create a prompt template 
+from langchain_core.runnables import RunnablePassthrough             # Create a runnable to pass through data
+
+# Packages for PDF generation
+from reportlab.lib.pagesizes import letter                           # Define page size for PDF
+from reportlab.lib.styles import ParagraphStyle                      # Define style for paragraphs 
+from reportlab.platypus import SimpleDocTemplate, Paragraph          # Create PDF document and paragraphs
+from reportlab.lib.enums import TA_JUSTIFY                           # Define alignment for paragraphs
+from reportlab.pdfbase import pdfmetrics                             # Register fonts for PDF generation
+from reportlab.pdfbase.ttfonts import TTFont                         # Register TrueType fonts for PDF generation
 
 # """
 # This is the final code that i will be using to generate a cover letter for a job application.
@@ -21,7 +29,8 @@ class CoverLetterGenerator:
     def __init__(self):
         # Initialize components with the best available embedding model
         self.embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
-        self.llm = ChatOpenAI(model="gpt-4o")  # Alternatively use Anthropic: ChatAnthropic(model="claude-3-opus-20240229")
+        self.llm = ChatOpenAI(model="gpt-4o")
+        # self.llm = ChatAnthropic(model="claude-3-7-sonnet-latest")
         
         # Load and process documents
         self.resume_retriever = self._prepare_resume()
@@ -53,7 +62,7 @@ class CoverLetterGenerator:
     # Load cover letter example
     def _load_cover_letter_example(self):
         # Load cover letter example
-        loader = PyPDFLoader("document_store/cover_letter_example/Cover Letter Muhammad Cikal Merdeka - Siloam Hospitals Group (Tbk)  - Data Analyst.pdf")
+        loader = PyPDFLoader("document_store/cover_letter_example/Cover Letter Muhammad Cikal Merdeka - GoTo Group - Business Intelligence Analyst.pdf")
         example = loader.load()
         return example[0].page_content  # Get the text content
 
@@ -94,9 +103,40 @@ class CoverLetterGenerator:
     def save_cover_letter(self, cover_letter: str, company_name: str, job_title: str):
 
         # Create the file path for each cover letter
-        file_path = f"result_store/Cover Letter v2 Muhammad Cikal Merdeka - {company_name} - {job_title}.txt"
-        with open(file_path, "w", encoding='utf-8') as file:
-            file.write(cover_letter.content)
+        file_path = f"result_store/Cover Letter Muhammad Cikal Merdeka - {company_name} - {job_title}.pdf"
+        
+        # Register Arial font
+        pdfmetrics.registerFont(TTFont('Arial', 'arial.ttf'))
+        
+        # Create document
+        doc = SimpleDocTemplate(
+            file_path,
+            pagesize=letter,
+            rightMargin=72,
+            leftMargin=72,
+            topMargin=72,
+            bottomMargin=72
+        )
+        
+        # Define style for justified text
+        style = ParagraphStyle(
+            'CustomStyle',
+            fontName='Arial',
+            fontSize=11,
+            alignment=TA_JUSTIFY,
+            spaceAfter=14
+        )
+        
+        # Split content into paragraphs and create story
+        story = []
+        paragraphs = cover_letter.content.split('\n\n')
+        for para in paragraphs:
+            if para.strip():
+                p = Paragraph(para.replace('\n', ' '), style)
+                story.append(p)
+        
+        # Build PDF
+        doc.build(story)
         return file_path
 
 # Code implementation
@@ -111,4 +151,4 @@ if __name__ == "__main__":
     result = generator.generate_cover_letter(job_description)
     
     # Save the generated cover letter
-    output_path = generator.save_cover_letter(result, company_name="PT. BNI Life Insurance", job_title="Data Analytic (Project Based)")
+    output_path = generator.save_cover_letter(result, company_name="PT Enseval Medika Prima", job_title="Data Analyst")

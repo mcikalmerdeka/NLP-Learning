@@ -1,8 +1,9 @@
+python-dotenv
 langchain
+langchain-community
+langchain-core
 langchain-openai
 langchain-anthropic
-langchain-community
-langchain-chroma
 chromadb
-python-dotenv
-pypdf
+openai
+reportlab>=4.0.0
