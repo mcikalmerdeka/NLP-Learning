@@ -1,4 +1,6 @@
-# NLP-Learning
+# NLP Learning
+
+As the name suggests, this repository contains various projects and tools related to natural language processing that I explore and experiment with further.
 
 ## Github Repositories Related to NLP and LLMs
 1. [Generative AI Guide - Aishwarya Naresh Reganti](https://github.com/aishwaryanr/awesome-generative-ai-guide?tab=readme-ov-file)
