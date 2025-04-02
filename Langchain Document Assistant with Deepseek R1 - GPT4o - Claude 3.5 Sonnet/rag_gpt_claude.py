@@ -92,7 +92,7 @@ EMBEDDING_MODEL = OpenAIEmbeddings(
     model="text-embedding-3-large"
 )
 
-# Initialize vector store
+# Initialize vector store for document chunks
 DOCUMENT_VECTOR_DB = InMemoryVectorStore(EMBEDDING_MODEL)
 
 # Model options
