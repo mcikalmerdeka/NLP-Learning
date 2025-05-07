@@ -14,17 +14,18 @@ As the name suggests, this repository contains various projects and tools relate
 9. [AllenNLP - NLP Research Library](https://github.com/allenai/allennlp)
 10. [Haystack - NLP Framework for Question Answering](https://github.com/deepset-ai/haystack)
 
-## E-Books and Other Reading Resources
+## E-Books and Other Online Reading/Tools Resources
 1. [Natural Language Processing with Python - Steven Bird, Ewan Klein, and Edward Loper](https://www.nltk.org/book/)
 2. [Word Embeddings Demo](https://www.cs.cmu.edu/~dst/WordEmbeddingDemo/tutorial.html)
-3. [Speech and Language Processing - Dan Jurafsky and James H. Martin](https://web.stanford.edu/~jurafsky/slp3/)
-4. [Dive into Deep Learning - Interactive Book](https://d2l.ai/)
-5. [Hugging Face NLP Course](https://huggingface.co/learn/nlp-course)
-6. [Stanford CS324 - Large Language Models](https://stanford-cs324.github.io/winter2022/)
-7. [The Illustrated Transformer - Jay Alammar](https://jalammar.github.io/illustrated-transformer/)
-8. [The Illustrated GPT-2 - Jay Alammar](https://jalammar.github.io/illustrated-gpt2/)
-9. [A Survey of Large Language Models - Papers](https://arxiv.org/abs/2303.18223)
-10. [Made With ML - MLOps Course with NLP Focus](https://madewithml.com/)
+3. [Embedding Projector](https://projector.tensorflow.org/)
+4. [LLM Rankings](https://openrouter.ai/rankings/programming?view=week)
+5. [Speech and Language Processing - Dan Jurafsky and James H. Martin](https://web.stanford.edu/~jurafsky/slp3/)
+6. [Dive into Deep Learning - Interactive Book](https://d2l.ai/)
+7. [Stanford CS324 - Large Language Models](https://stanford-cs324.github.io/winter2022/)
+8. [The Illustrated Transformer - Jay Alammar](https://jalammar.github.io/illustrated-transformer/)
+9. [The Illustrated GPT-2 - Jay Alammar](https://jalammar.github.io/illustrated-gpt2/)
+10. [A Survey of Large Language Models - Papers](https://arxiv.org/abs/2303.18223)
+11. [Made With ML - MLOps Course with NLP Focus](https://madewithml.com/)
 
 ## Useful and Interesting Videos
 
@@ -39,12 +40,11 @@ Lectures, Conferences, Video Essays about NLP and LLMs
 7. [NVIDIA GTC 2024 Keynote - NVIDIA](https://www.youtube.com/live/Y2F8yisiS6E?si=rYjO11F-dLKMLXxa) (Mar 2024)
 8. [But what is a GPT? Visual intro to Transformers | Deep learning, chapter 5 - 3Blue1Brown](https://youtu.be/wjZofJX0v4M?si=k9joK0SLhPOl6fbZ) (Apr 2024)
 9. [Stanford CS224N: NLP with Deep Learning - Full Course](https://www.youtube.com/playlist?list=PLoROMvodv4rOSH4v6133s9LFPRHjEmbmJ) (2021)
-10. [How ChatGPT Works Technically - Computerphile](https://youtu.be/LeO3UiH7n1w?si=2EqA6qUPUaUVW8JH) (Mar 2023)
-11. [Transformers, explained: Understand the model behind GPT, BERT, and T5 - Dale Markowitz](https://youtu.be/SZorAJ4I-sA?si=UdZDX0WqxVZF3GQm) (Apr 2023)
-12. [MIT 6.S191: Deep Learning for Natural Language Processing - Alexander Amini](https://youtu.be/QvkQ1B3FBqA?si=jHrxSv9c7NcVwNRO) (Jan 2023)
-13. [How AI Image Generators Work (Stable Diffusion) - Computerphile](https://youtu.be/1CIpzeNxIhU?si=LiFTcWFZwxmudh5n) (Sep 2022)
-14. [Neural Networks: Zero to Hero - Andrej Karpathy's Full Course](https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ) (2022-2023)
-15. [AI Language Models & The Future of Work - Lex Fridman with Sam Altman](https://youtu.be/L_Guz73e6fw?si=Pu4Sdb9USK_fsmWN) (Apr 2023)
+10. [Transformers, explained: Understand the model behind GPT, BERT, and T5 - Dale Markowitz](https://youtu.be/SZorAJ4I-sA?si=UdZDX0WqxVZF3GQm) (Apr 2023)
+11. [MIT 6.S191: Deep Learning for Natural Language Processing - Alexander Amini](https://youtu.be/QvkQ1B3FBqA?si=jHrxSv9c7NcVwNRO) (Jan 2023)
+12. [How AI Image Generators Work (Stable Diffusion) - Computerphile](https://youtu.be/1CIpzeNxIhU?si=LiFTcWFZwxmudh5n) (Sep 2022)
+13. [Neural Networks: Zero to Hero - Andrej Karpathy's Full Course](https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ) (2022-2023)
+14. [AI Language Models & The Future of Work - Lex Fridman with Sam Altman](https://youtu.be/L_Guz73e6fw?si=Pu4Sdb9USK_fsmWN) (Apr 2023)
 
 ## Courses and Learning Platforms
 1. [DeepLearning.AI - Natural Language Processing Specialization](https://www.deeplearning.ai/courses/natural-language-processing-specialization/)
