@@ -1,0 +1,16 @@
+[project]
+name = "business-intelligence-chatbot-with-langchain"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "langchain>=0.3.25",
+    "langchain-openai>=0.3.16",
+    "numpy>=2.2.5",
+    "openai>=1.78.0",
+    "pandas>=2.2.3",
+    "psycopg2>=2.9.10",
+    "python-dotenv>=1.1.0",
+    "streamlit>=1.45.0",
+]
