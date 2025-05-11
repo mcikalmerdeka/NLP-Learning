@@ -1,6 +1,10 @@
 # Script to create a database and a table in PostgreSQL
 import pandas as pd
 import psycopg2
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Step 1: Load the CSV file
 csv_file = "https://raw.githubusercontent.com/mcikalmerdeka/NLP-Learning/main/Business%20Intelligence%20Chatbot%20with%20Langchain/dataset_experiments/sales_data_sample.csv"
@@ -14,8 +18,8 @@ try:
     conn = psycopg2.connect(
         host="localhost",
         database="postgres", # using default postgres database
-        user="XXXXX", # Replace with your PostgreSQL username
-        password="XXXXX" # Replace with your PostgreSQL password
+        user=os.getenv("DB_USER"), # Replace with your PostgreSQL username
+        password=os.getenv("DB_PASSWORD") # Replace with your PostgreSQL password
     )
     cursor = conn.cursor()
     print("Connected to PostgreSQL successfully!")
