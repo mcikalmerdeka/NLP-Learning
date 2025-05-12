@@ -1,0 +1,61 @@
+Personal note to myself for FAISS explanation
+Source: https://chatgpt.com/c/68221f88-58ec-800a-a7ae-cf989dde460d
+
+---------------------------------------------------------------------------------
+
+FAISS (Facebook AI Similarity Search) is **neither an embedding model** nor a **full vector database** like ChromaDB. It's best described as a **vector similarity search library**. Here's a breakdown to clarify:
+
+---
+
+### 🔍 What is FAISS?
+
+FAISS is a **library developed by Facebook AI Research** for efficient similarity search and clustering of dense vectors. It’s optimized for **fast nearest neighbor search** in high-dimensional spaces, which is a common task in many ML and NLP applications (like semantic search, recommendation systems, etc.).
+
+---
+
+### 🧠 So what is it similar to?
+
+FAISS is **most similar to libraries** like:
+
+* **Annoy** (from Spotify)
+* **ScaNN** (from Google)
+* **HNSWlib** (for Hierarchical Navigable Small World graphs)
+
+These all focus on **approximate nearest neighbor (ANN) search**.
+
+---
+
+### 🧩 FAISS is NOT:
+
+* ❌ An embedding model like OpenAI’s `text-embedding-ada-002`
+* ❌ A full-fledged vector DB with metadata, persistence, and query language like **ChromaDB**, **Pinecone**, or **Weaviate**
+
+---
+
+### ✅ FAISS **does**:
+
+* Accept input vectors (which you usually get **from an embedding model**)
+* Index those vectors using various indexing methods (flat, IVF, PQ, HNSW, etc.)
+* Let you search for the nearest vectors **very efficiently**
+* Work in memory (although it can persist data manually)
+* Scale well with millions of vectors
+
+---
+
+### 🧱 Typical Stack:
+
+To use FAISS, your pipeline usually looks like:
+
+1. **Embedding Model** (e.g., OpenAI, SentenceTransformers) → generates vectors
+2. **FAISS Index** → stores vectors and enables fast similarity search
+3. \[Optional] Wrap with a database or tool for metadata, persistence, etc.
+
+---
+
+### ✅ Use FAISS if:
+
+* You want fast, large-scale vector search
+* You're okay managing storage/persistence yourself
+* You want more control over indexing and performance
+
+---
