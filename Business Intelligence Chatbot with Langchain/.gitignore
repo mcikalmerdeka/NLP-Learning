@@ -1,2 +1,3 @@
 .env
 *.ipynb
+faiss_index_store/
