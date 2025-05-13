@@ -1,7 +1,7 @@
 import streamlit as st
 import os
 from dotenv import load_dotenv
-from langchain_community.document_loaders import PDFPlumberLoader
+from langchain_community.document_loaders import PyMuPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.vectorstores import InMemoryVectorStore
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
@@ -19,22 +19,22 @@ if 'chat_history' not in st.session_state:
 st.markdown("""
     <style>
     .stApp {
-        background-color: #0E1117;
-        color: #FFFFFF;
+        background-color: #f0f2f6;
+        color: #262730;
     }
     
     /* Chat Input Styling */
     .stChatInput input {
-        background-color: #1E1E1E !important;
-        color: #FFFFFF !important;
-        border: 1px solid #3A3A3A !important;
+        background-color: #ffffff !important;
+        color: #262730 !important;
+        border: 1px solid #cccccc !important;
     }
     
     /* User Message Styling */
     .stChatMessage[data-testid="stChatMessage"]:nth-child(odd) {
-        background-color: #1E1E1E !important;
-        border: 1px solid #3A3A3A !important;
-        color: #E0E0E0 !important;
+        background-color: #e6f3ff !important;
+        border: 1px solid #b3d9ff !important;
+        color: #262730 !important;
         border-radius: 10px;
         padding: 15px;
         margin: 10px 0;
@@ -42,9 +42,9 @@ st.markdown("""
     
     /* Assistant Message Styling */
     .stChatMessage[data-testid="stChatMessage"]:nth-child(even) {
-        background-color: #2A2A2A !important;
-        border: 1px solid #404040 !important;
-        color: #F0F0F0 !important;
+        background-color: #ffffff !important;
+        border: 1px solid #e6e6e6 !important;
+        color: #262730 !important;
         border-radius: 10px;
         padding: 15px;
         margin: 10px 0;
@@ -52,24 +52,24 @@ st.markdown("""
     
     /* Avatar Styling */
     .stChatMessage .avatar {
-        background-color: #00FFAA !important;
-        color: #000000 !important;
+        background-color: #4b9eff !important;
+        color: #ffffff !important;
     }
     
     /* Text Color Fix */
     .stChatMessage p, .stChatMessage div {
-        color: #FFFFFF !important;
+        color: #262730 !important;
     }
     
     .stFileUploader {
-        background-color: #1E1E1E;
-        border: 1px solid #3A3A3A;
+        background-color: #ffffff;
+        border: 1px solid #cccccc;
         border-radius: 5px;
         padding: 15px;
     }
     
     h1, h2, h3 {
-        color: #00FFAA !important;
+        color: #0068c9 !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -98,7 +98,7 @@ DOCUMENT_VECTOR_DB = InMemoryVectorStore(EMBEDDING_MODEL)
 # Model options
 MODEL_OPTIONS = {
     "GPT-4o": "gpt-4o",
-    "Claude 3.5 Sonnet": "claude-3-5-sonnet-20241022"
+    "Claude 3.7 Sonnet": "claude-3-7-sonnet-20250219"
 }
 
 # Initialize the chosen language model
@@ -107,13 +107,15 @@ def initialize_language_model(model_choice):
         return ChatOpenAI(
             api_key=os.getenv("OPENAI_API_KEY"),
             model="gpt-4o",
-            temperature=0
+            temperature=0,
+            max_tokens=1024
         )
-    else:  # Claude 3.5 Sonnet
+    else:  # Claude 3.7 Sonnet
         return ChatAnthropic(
             api_key=os.getenv("ANTHROPIC_API_KEY"),
-            model="claude-3-5-sonnet-20241022",
-            temperature=0
+            model="claude-3-7-sonnet-20250219",
+            temperature=0,
+            max_tokens=1024
         )
 
 # Function to save the uploaded PDF file
@@ -125,7 +127,7 @@ def save_uploaded_file(uploaded_file):
 
 # Fuction to load PDF documents from the uploaded file
 def load_pdf_documents(file_path):
-    document_loader = PDFPlumberLoader(file_path)
+    document_loader = PyMuPDFLoader(file_path)
     return document_loader.load()
 
 # Function to chunk the documents into smaller parts
