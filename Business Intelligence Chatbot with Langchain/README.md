@@ -45,9 +45,28 @@ And in this project we will try to implement that approach.
    ```
 2. Install dependencies:
 
+   Using pip:
    ```
    pip install -e .
    ```
+   
+   Using uv package manager:
+   ```
+   uv add faiss-cpu langchain langchain-community langchain-openai numpy openai pandas psycopg2 python-dotenv streamlit
+   ```
+   
+   Required dependencies:
+   - faiss-cpu>=1.11.0
+   - langchain>=0.3.25
+   - langchain-community>=0.3.24
+   - langchain-openai>=0.3.16
+   - numpy>=2.2.5
+   - openai>=1.78.0
+   - pandas>=2.2.3
+   - psycopg2>=2.9.10
+   - python-dotenv>=1.1.0
+   - streamlit>=1.45.0
+
 3. Create a `.env` file in the project root with your API and database credentials:
 
    ```
