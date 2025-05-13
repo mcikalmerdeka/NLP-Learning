@@ -4,7 +4,7 @@ A powerful LLM-powered document assistant that extracts information from various
 
 ## 🚀 Features
 
-- **Multiple LLM Support**: Integrates with GPT-4o, Claude 3.5 Sonnet, and DeepSeek-R1 models
+- **Multiple LLM Support**: Integrates with GPT-4o, Claude 3.7 Sonnet, and DeepSeek-R1 models
 - **Document Processing**: Efficiently processes PDF documents, extracting and indexing their content
 - **Semantic Search**: Uses vector embeddings to find the most relevant information from your documents
 - **Conversational Interface**: Clean, intuitive chat interface to ask questions about your documents
@@ -12,17 +12,29 @@ A powerful LLM-powered document assistant that extracts information from various
 
 ## 🛠️ Implementation Details
 
-- Built with **LangChain** for document processing and retrieval augmented generation (RAG)
+- Built with **LangChain** framework for document processing and retrieval augmented generation (RAG)
 - Utilizes **Streamlit** for the web interface
-- Supports local deployment with **Ollama** for DeepSeek models
-- Implements efficient document chunking and indexing for optimal search performance
-- Configurable model selection to balance between performance and cost
+- Implements chunking with `RecursiveCharacterTextSplitter` for optimal document segmentation
+- Uses `InMemoryVectorStore` for efficient document storage and retrieval
+- Supports semantic search with both cloud and local embedding models
+- Handles PDF documents using `PyMuPDFLoader` (GPT/Claude version) and `PDFPlumberLoader` (DeepSeek version)
+- Includes chat history management for continuous conversations
 
 ## 📋 Requirements
 
-- Python 3.8+
-- Streamlit
-- LangChain and related packages
+- Python 3.11+
+- Required packages (from pyproject.toml):
+  ```
+  langchain-anthropic>=0.3.13
+  langchain-community>=0.3.24
+  langchain-core>=0.3.59
+  langchain-ollama>=0.3.2
+  langchain-openai>=0.3.16
+  langchain-text-splitters>=0.3.8
+  pymupdf>=1.25.5
+  python-dotenv>=1.1.0
+  streamlit>=1.45.1
+  ```
 - API keys for OpenAI and Anthropic (for cloud models)
 - Ollama installation (for local models)
 
@@ -41,36 +53,48 @@ A powerful LLM-powered document assistant that extracts information from various
 4. For local models, install Ollama and pull the DeepSeek models:
    ```
    ollama pull deepseek-r1:1.5b
-   ollama pull deepseek-r1:3b
+   ```
+5. Create a directory for document storage:
+   ```
+   mkdir -p document_store/pdfs
    ```
 
 ## 🚀 Usage
 
-### GPT-4o and Claude 3.5 Version
+### GPT-4o and Claude 3.7 Version
 
 ```
-python rag_gpt_claude.py
+streamlit run rag_gpt_claude.py
 ```
 
 ### DeepSeek R1 Version
 
 ```
-python rag_deepseek_r1.py
+streamlit run rag_deepseek_r1.py
 ```
 
 1. Upload a PDF document using the file uploader
-2. Ask questions about the document content
-3. Receive AI-generated responses based on the document's content
+2. Wait for the document to be processed, chunked, and indexed
+3. Ask questions about the document content using the chat interface
+4. Receive AI-generated responses based on the document's content
+5. Use the "Clear Chat History" button in the sidebar to start a new conversation
 
 ## 📊 Comparison of Available Models
 
-| Model             | Type  | Best For                                  | Required Setup      |
-| ----------------- | ----- | ----------------------------------------- | ------------------- |
-| GPT-4o            | Cloud | High accuracy, complex queries            | OpenAI API key      |
-| Claude 3.5 Sonnet | Cloud | Nuanced understanding, detailed responses | Anthropic API key   |
-| DeepSeek R1       | Local | Privacy, offline use, faster responses    | Ollama installation |
+| Model             | Type  | Best For                                  | Required Setup      | Implementation                            |
+| ----------------- | ----- | ----------------------------------------- | ------------------- | ----------------------------------------- |
+| GPT-4o            | Cloud | High accuracy, complex queries            | OpenAI API key      | ChatOpenAI with temperature=0             |
+| Claude 3.7 Sonnet | Cloud | Nuanced understanding, detailed responses | Anthropic API key   | ChatAnthropic with temperature=0          |
+| DeepSeek R1       | Local | Privacy, offline use, faster responses    | Ollama installation | OllamaLLM with the deepseek-r1:1.5b model |
+
+## 🔍 Embedding Models
+
+The application uses different embedding models based on the version:
+
+- **Cloud Version**: OpenAI's `text-embedding-3-large` model for high-quality embeddings
+- **Local Version**: Can use either OpenAI embeddings or local Ollama embeddings with DeepSeek models
 
 ## 🔒 Privacy
 
-- Cloud models (GPT-4o, Claude 3.5): Document content is sent to external APIs
+- Cloud models (GPT-4o, Claude 3.7): Document content is sent to external APIs
 - Local models (DeepSeek R1): All processing happens locally with no data leaving your machine
