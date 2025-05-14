@@ -1,3 +1,4 @@
 .env
 .venv/
+chroma_db/
 .python-version
