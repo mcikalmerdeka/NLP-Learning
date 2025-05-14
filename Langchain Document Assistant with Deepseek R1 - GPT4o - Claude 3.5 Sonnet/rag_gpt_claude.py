@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 from langchain_community.document_loaders import PyMuPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_core.vectorstores import InMemoryVectorStore
+from langchain_chroma import Chroma
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from langchain_core.prompts import ChatPromptTemplate
@@ -93,7 +93,11 @@ EMBEDDING_MODEL = OpenAIEmbeddings(
 )
 
 # Initialize vector store for document chunks
-DOCUMENT_VECTOR_DB = InMemoryVectorStore(EMBEDDING_MODEL)
+DOCUMENT_VECTOR_DB = Chroma(
+    embedding_function=EMBEDDING_MODEL,
+    collection_name="document_chunks",
+    persist_directory="./chroma_db"
+)
 
 # Model options
 MODEL_OPTIONS = {
@@ -143,9 +147,23 @@ def chunk_documents(raw_documents):
 def index_documents(document_chunks):
     DOCUMENT_VECTOR_DB.add_documents(document_chunks)
 
+# Function to reset or initialize vector store
+def initialize_vector_store():
+    # Check if collection exists and delete it
+    try:
+        DOCUMENT_VECTOR_DB.delete_collection()
+    except:
+        pass
+    # Create fresh collection
+    return Chroma(
+        embedding_function=EMBEDDING_MODEL,
+        collection_name="document_chunks",
+        persist_directory="./chroma_db"
+    )
+
 # Function to find related documents based on the user query
-def find_related_documents(query):
-    return DOCUMENT_VECTOR_DB.similarity_search(query)
+def find_related_documents(query, k=5): # k is the number of documents to return
+    return DOCUMENT_VECTOR_DB.similarity_search(query, k=k)
 
 # Function to generate an answer using the language model
 def generate_answer(user_query, context_documents, language_model):
@@ -221,6 +239,7 @@ uploaded_pdf = st.file_uploader(
 
 # Main App Logic
 if uploaded_pdf: # If a PDF file is uploaded
+    DOCUMENT_VECTOR_DB = initialize_vector_store()  # Reset for new document
     saved_path = save_uploaded_file(uploaded_pdf) # Save the uploaded file
     raw_docs = load_pdf_documents(saved_path) # Load the PDF document
     processed_chunks = chunk_documents(raw_docs) # Chunk the document into smaller parts
