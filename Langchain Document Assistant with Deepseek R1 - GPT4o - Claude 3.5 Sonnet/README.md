@@ -9,13 +9,16 @@ A powerful LLM-powered document assistant that extracts information from various
 - **Semantic Search**: Uses vector embeddings to find the most relevant information from your documents
 - **Conversational Interface**: Clean, intuitive chat interface to ask questions about your documents
 - **Custom Styling**: Dark mode interface with responsive design
+- **Multiple Vector Store Options**: Supports both ChromaDB (current approach) and InMemoryVectorStore (legacy approach)
 
 ## 🛠️ Implementation Details
 
 - Built with **LangChain** framework for document processing and retrieval augmented generation (RAG)
 - Utilizes **Streamlit** for the web interface
 - Implements chunking with `RecursiveCharacterTextSplitter` for optimal document segmentation
-- Uses `InMemoryVectorStore` for efficient document storage and retrieval
+- Supports two vector store implementations:
+  - **ChromaDB** (current approach): Persistent vector database for better scalability and performance
+  - **InMemoryVectorStore** (legacy approach): Simple in-memory storage for lightweight applications
 - Supports semantic search with both cloud and local embedding models
 - Handles PDF documents using `PyMuPDFLoader` (GPT/Claude version) and `PDFPlumberLoader` (DeepSeek version)
 - Includes chat history management for continuous conversations
@@ -41,9 +44,9 @@ A powerful LLM-powered document assistant that extracts information from various
 ## 🔧 Setup
 
 1. Clone this repository
-2. Install the required packages:
+2. Install the required packages using uv package manager:
    ```
-   pip install -r requirements.txt
+   uv pip install .
    ```
 3. Create a `.env` file with your API keys:
    ```
@@ -61,10 +64,16 @@ A powerful LLM-powered document assistant that extracts information from various
 
 ## 🚀 Usage
 
-### GPT-4o and Claude 3.7 Version
+### GPT-4o and Claude 3.7 Version (ChromaDB)
 
 ```
 streamlit run rag_gpt_claude.py
+```
+
+### GPT-4o and Claude 3.7 Version (Legacy InMemoryVectorStore)
+
+```
+streamlit run rag_gpt_claude_old_approach.py
 ```
 
 ### DeepSeek R1 Version
@@ -98,3 +107,18 @@ The application uses different embedding models based on the version:
 
 - Cloud models (GPT-4o, Claude 3.7): Document content is sent to external APIs
 - Local models (DeepSeek R1): All processing happens locally with no data leaving your machine
+
+## 🗄️ Vector Storage Options
+
+### ChromaDB (Current Approach)
+
+- **Persistent Storage**: Document embeddings are saved to disk
+- **Better Scalability**: Can handle larger document collections
+- **Improved Performance**: Optimized for efficient retrieval
+- **Implementation**: Used in `rag_gpt_claude.py`
+
+### InMemoryVectorStore (Legacy Approach)
+
+- **Lightweight**: Simple in-memory storage with no persistence
+- **Fast for Small Datasets**: Efficient for smaller document collections
+- **Implementation**: Used in `rag_gpt_claude_old_approach.py`
