@@ -1,0 +1,17 @@
+[project]
+name = "nltk-vs-spacy-comparison"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "gensim>=4.3.3",
+    "matplotlib>=3.10.3",
+    "nltk>=3.9.1",
+    "numpy>=1.26.4",
+    "pandas>=2.2.3",
+    "scikit-learn>=1.6.1",
+    "seaborn>=0.13.2",
+    "spacy>=3.8.5",
+    "textblob>=0.19.0",
+]
