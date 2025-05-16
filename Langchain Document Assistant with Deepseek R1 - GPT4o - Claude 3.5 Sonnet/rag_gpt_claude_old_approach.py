@@ -188,12 +188,12 @@ def display_chat_history():
             st.write(message["content"])
 
 # UI Configuration
-st.title("📘 DocuMind AI")
+st.title("📘 DocuChat AI")
 st.markdown("### Your Intelligent Document Assistant")
 st.markdown("---")
 
 # Add application explanation
-st.expander("ℹ️ About DocuMind AI").markdown(
+st.expander("ℹ️ About DocuChat AI").markdown(
 """
     - This app allows you to upload a research document (in PDF format) and ask questions about its content.
     - The AI assistant will help you find answers to your questions based on the document content.
