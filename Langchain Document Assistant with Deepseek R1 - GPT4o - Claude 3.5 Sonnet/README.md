@@ -1,5 +1,7 @@
 # DocuChat AI: Intelligent Document Assistant
 
+![Project Header](./assets/Project%20Header.jpg)
+
 A powerful LLM-powered document assistant that extracts information from various documents, supporting files containing both text and image components. This application enables seamless data retrieval and analysis from your content library.
 
 ## 🚀 Features
@@ -122,3 +124,22 @@ The application uses different embedding models based on the version:
 - **Lightweight**: Simple in-memory storage with no persistence
 - **Fast for Small Datasets**: Efficient for smaller document collections
 - **Implementation**: Used in `rag_gpt_claude_old_approach.py`
+
+## Project Screenshots
+
+In this demo I used the BPS Palu City data of [population and employment](https://github.com/mcikalmerdeka/NLP-Learning/blob/main/Langchain%20Document%20Assistant%20with%20Deepseek%20R1%20-%20GPT4o%20-%20Claude%203.5%20Sonnet/document_store/pdfs/Statistik%20Penduduk%20dan%20Ketenagakerjaan%20Kota%20Palu%202025.pdf) from the official report of "Kota Palu Dalam Angka 2025" which you can access in this `document_store` folder in this repo. You may use several example files that I stored there or use your own PDFs.
+
+### Document Upload Interface
+
+![Upload Document](./assets/Project%20Screenshot%201.png)
+*The document upload interface allows users to select and upload PDF files for analysis. The system processes the document and prepares it for question answering.*
+
+### Initial Question and Answer
+
+![Document Chat](./assets/Project%20Screenshot%202.png)
+*After document processing, users can ask specific questions about the content. The AI assistant retrieves relevant information from the document and provides comprehensive answers based on the document context.*
+
+### Follow-up Question Capabilities
+
+![Follow-up Questions](./assets/Project%20Screenshot%203.png)
+*The system supports follow-up questions, maintaining context from previous interactions. This allows for a natural conversation flow while exploring document content in greater depth.*
