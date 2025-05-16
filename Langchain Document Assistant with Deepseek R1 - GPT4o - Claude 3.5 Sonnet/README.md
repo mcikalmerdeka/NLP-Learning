@@ -1,4 +1,4 @@
-# DocuMind AI: Intelligent Document Assistant
+# DocuChat AI: Intelligent Document Assistant
 
 A powerful LLM-powered document assistant that extracts information from various documents, supporting files containing both text and image components. This application enables seamless data retrieval and analysis from your content library.
 
