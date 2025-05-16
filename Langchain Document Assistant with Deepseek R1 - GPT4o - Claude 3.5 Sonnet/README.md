@@ -132,14 +132,17 @@ In this demo I used the BPS Palu City data of [population and employment](https:
 ### Document Upload Interface
 
 ![Upload Document](./assets/Project%20Screenshot%201.png)
+
 *The document upload interface allows users to select and upload PDF files for analysis. The system processes the document and prepares it for question answering.*
 
 ### Initial Question and Answer
 
 ![Document Chat](./assets/Project%20Screenshot%202.png)
+
 *After document processing, users can ask specific questions about the content. The AI assistant retrieves relevant information from the document and provides comprehensive answers based on the document context.*
 
 ### Follow-up Question Capabilities
 
 ![Follow-up Questions](./assets/Project%20Screenshot%203.png)
+
 *The system supports follow-up questions, maintaining context from previous interactions. This allows for a natural conversation flow while exploring document content in greater depth.*
