@@ -17,7 +17,7 @@ df = df.where(pd.notnull(df), None)
 try:
     conn = psycopg2.connect(
         host="localhost",
-        database="postgres", # using default postgres database
+        database=os.getenv("DB_NAME_1"), # Replace with your database name
         user=os.getenv("DB_USER"), # Replace with your PostgreSQL username
         password=os.getenv("DB_PASSWORD") # Replace with your PostgreSQL password
     )
