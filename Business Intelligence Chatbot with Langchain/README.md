@@ -1,5 +1,7 @@
 # Business Intelligence Chatbot with Langchain
 
+![Project Header](https://raw.githubusercontent.com/mcikalmerdeka/NLP-Learning/refs/heads/main/Business%20Intelligence%20Chatbot%20with%20Langchain/assets/Project%20Header.jpg)
+
 This repo is for using LLMs to chat with your SQL database. Inspired by this [Gemini Chatbot repo](https://github.com/ardyadipta/gemini_chatbot_sql). Instead of using MySQL I used PostgreSQL and instead of using Google Gemini model series, I experimented using OpenAI (GPT-4.1) and Anthropic (Claude 3.7 Sonnet) model which I am more familiar with and also wanted to try experiment with local models usage such as Deepseek-r1:1.5b and Qwen3:1.7b that is installed in my PC.
 
 ## Objective and Project Origin
@@ -46,16 +48,19 @@ And in this project we will try to implement that approach.
 2. Install dependencies:
 
    Using pip:
+
    ```
    pip install -e .
    ```
-   
+
    Using uv package manager:
+
    ```
    uv add faiss-cpu langchain langchain-community langchain-openai numpy openai pandas psycopg2 python-dotenv streamlit
    ```
-   
+
    Required dependencies:
+
    - faiss-cpu>=1.11.0
    - langchain>=0.3.25
    - langchain-community>=0.3.24
@@ -66,7 +71,6 @@ And in this project we will try to implement that approach.
    - psycopg2>=2.9.10
    - python-dotenv>=1.1.0
    - streamlit>=1.45.0
-
 3. Create a `.env` file in the project root with your API and database credentials:
 
    ```
