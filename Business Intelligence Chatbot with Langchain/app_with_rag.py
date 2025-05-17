@@ -2,13 +2,15 @@ import os
 from dotenv import load_dotenv
 import streamlit as st
 import psycopg2
-from openai import OpenAI
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_anthropic import ChatAnthropic
+from langchain_core.prompts import ChatPromptTemplate
 from langchain_community.vectorstores import FAISS
-from langchain_community.embeddings import OpenAIEmbeddings
 
 # Configure OpenAI API
 load_dotenv()
 openai_api_key = os.getenv("OPENAI_API_KEY")
+anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
 
 # Mock database schema and descriptions
 schema_descriptions = [
@@ -38,6 +40,7 @@ schema_descriptions = [
     "Table: sales, Column: DEALSIZE, Description: Size of the deal (Small, Medium, Large)"
 ]
 
+# Function to generate a vector index
 def generate_vector_index(text_segments):
     """
     Creates a vector store of text chunks and saves it to a FAISS index.
@@ -58,23 +61,24 @@ vector_db = generate_vector_index(schema_descriptions)
 # Utility Functions
 def configure_streamlit():
     """Configure the Streamlit app settings."""
-    st.set_page_config(page_title="Chat with your database through OpenAI")    
-    st.header("Chat with your database through OpenAI")
+    st.set_page_config(page_title="Chat with your database through LLMs")    
+    st.header("Chat with your database through LLMs")
 
-def get_openai_response(question, prompt):
-    """Get response from the OpenAI model."""
+def initialize_language_model(model_choice):
+    """Initialize the chosen language model."""
+    if model_choice == "GPT-4o":
+        return ChatOpenAI(api_key=openai_api_key, model="gpt-4o")
+    else:
+        return ChatAnthropic(api_key=anthropic_api_key, model="claude-3-7-sonnet-20250219")
+
+def get_model_response(prompt, model_choice):
+    """Get response from the LLM."""
     try:
-        client = OpenAI(api_key=openai_api_key)
-        response = client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "system", "content": prompt},
-                {"role": "user", "content": question}
-            ]
-        )
-        return response.choices[0].message.content
+        client = initialize_language_model(model_choice)
+        response = client.invoke(prompt)
+        return response.content
     except Exception as e:
-        st.error(f"Error with OpenAI API: {e}")
+        st.error(f"Error with model API: {e}")
         return None
     
 def connect_to_database():
@@ -109,7 +113,6 @@ def read_sql_query(query):
             connection.close()
     return None
 
-
 # Prompt Definitions
 PROMPT_HUMANE_RESPONSE_TEMPLATE = """
     You are a customer service agent.
@@ -127,8 +130,8 @@ def retrieve_schema(user_query):
     """Retrieve relevant schema details from vector store."""
     return vector_db.similarity_search(user_query, k=5)
 
-def generate_sql_query(question, retrieved_schema):
-    """Generate SQL query based on user query and retrieved schema using Gemini."""
+def generate_sql_query(question, retrieved_schema, model_choice):
+    """Generate SQL query based on user query and retrieved schema using LLMs."""
     prompt = f"""
     
     You are an expert in converting English questions to PostgreSQL query!
@@ -139,14 +142,33 @@ def generate_sql_query(question, retrieved_schema):
     Based on the following database schema:
     {retrieved_schema}
     
+    Convert this question: {question}
     """
-    return get_openai_response(question, prompt)
+    return get_model_response(prompt, model_choice)
 
 
 # Main Application Logic
 def main():
     show_query = True # Show query for debugging
     configure_streamlit()
+    
+    # Sidebar for UI Configuration
+    with st.sidebar:
+        # Sidebar for Model Configuration
+        st.subheader("Model Settings")
+        model_choice = st.selectbox("Select a model", ["GPT-4o", "Claude 3.7 Sonnet"], key="model_choice")
+
+        # Sidebar for Database Configuration
+        st.subheader("Database Settings")
+        st.text_input("Host", value="localhost", key="Host")
+        st.text_input("Port", value="5432", key="Port")
+        st.text_input("User", value=os.getenv("DB_USER"), key="User")
+        st.text_input("Password", type="password", value=os.getenv("DB_PASSWORD"), key="Password")
+        st.text_input("Database", value="postgres", key="Database")
+        if st.button("Test Connection"):
+            with st.spinner("Testing database connection..."):
+                if connect_to_database():
+                    st.success("Connection successful!")
 
     # User input
     question = st.text_input("Input: ", key="input")
@@ -159,8 +181,8 @@ def main():
             st.subheader("Retrieved Schema Details")
             st.write(retrieved_schema)
 
-            # Get SQL query from OpenAI
-            sql_query = generate_sql_query(question, retrieved_schema)
+            # Get SQL query using the selected model
+            sql_query = generate_sql_query(question, retrieved_schema, st.session_state.model_choice)
             if sql_query:
                 if show_query:
                     st.subheader("Generated SQL Query:")
@@ -174,25 +196,17 @@ def main():
                         for row in result:
                             st.write(row)
 
-                # Generate humane response
-                humane_response = get_openai_response(question, PROMPT_HUMANE_RESPONSE_TEMPLATE.format(question=question, result=result))
-                st.subheader("AI Response:")
-                st.write(humane_response)
+                    # Generate humane response using the selected model
+                    humane_response = get_model_response(
+                        PROMPT_HUMANE_RESPONSE_TEMPLATE.format(question=question, result=result), 
+                        st.session_state.model_choice
+                    )
+                    st.subheader("AI Response:")
+                    st.write(humane_response)
+                else:
+                    st.error("No results returned from the query.")
             else:
-                st.error("No results returned from the query.")
-
-    # Sidebar for Database Configuration
-    with st.sidebar:
-        st.subheader("Database Settings")
-        st.text_input("Host", value="localhost", key="Host")
-        st.text_input("Port", value="5432", key="Port")
-        st.text_input("User", value=os.getenv("DB_USER"), key="User")
-        st.text_input("Password", type="password", value=os.getenv("DB_PASSWORD"), key="Password")
-        st.text_input("Database", value="postgres", key="Database")
-        if st.button("Test Connection"):
-            with st.spinner("Testing database connection..."):
-                if connect_to_database():
-                    st.success("Connection successful!")
+                st.error("Failed to generate SQL query.")
 
     # Footer
     st.markdown(

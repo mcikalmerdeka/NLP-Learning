@@ -3,31 +3,51 @@ from dotenv import load_dotenv
 import streamlit as st
 import psycopg2
 from openai import OpenAI
+from anthropic import Anthropic
 
-# Configure OpenAI API
+# Configure APIs
 load_dotenv()
 openai_api_key = os.getenv("OPENAI_API_KEY")
+anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
 
 # Utility Functions
 def configure_streamlit():
     """Configure the Streamlit app settings."""
-    st.set_page_config(page_title="Chat with your database through OpenAI")    
-    st.header("Chat with your database through OpenAI")
+    st.set_page_config(page_title="Chat with your database through LLMs")    
+    st.header("Chat with your database through LLMs")
 
-def get_openai_response(question, prompt):
-    """Get response from the OpenAI model."""
+def initialize_language_model(model_choice):
+    """Initialize the chosen language model client."""
+    if model_choice == "GPT-4o":
+        return OpenAI(api_key=openai_api_key)
+    else:
+        return Anthropic(api_key=anthropic_api_key)
+
+def get_model_response(question, prompt, model_choice):
+    """Get response from the selected LLM."""
     try:
-        client = OpenAI(api_key=openai_api_key)
-        response = client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "system", "content": prompt},
-                {"role": "user", "content": question}
-            ]
-        )
-        return response.choices[0].message.content
+        client = initialize_language_model(model_choice)
+        
+        if model_choice == "GPT-4o":
+            response = client.chat.completions.create(
+                model="gpt-4o",
+                messages=[
+                    {"role": "system", "content": prompt},
+                    {"role": "user", "content": question}
+                ]
+            )
+            return response.choices[0].message.content
+        else:
+            response = client.messages.create(
+                model="claude-3-7-sonnet-20250219",
+                system=prompt,
+                messages=[
+                    {"role": "user", "content": question}
+                ]
+            )
+            return response.content[0].text
     except Exception as e:
-        st.error(f"Error with OpenAI API: {e}")
+        st.error(f"Error with model API: {e}")
         return None
     
 def connect_to_database():
@@ -114,14 +134,32 @@ PROMPT_HUMANE_RESPONSE_TEMPLATE = """
 def main():
     show_query = True # Show query for debugging
     configure_streamlit()
+    
+    # Sidebar for UI Configuration
+    with st.sidebar:
+        # Sidebar for Model Configuration
+        st.subheader("Model Settings")
+        model_choice = st.selectbox("Select a model", ["GPT-4o", "Claude 3.7 Sonnet"], key="model_choice")
+
+        # Sidebar for Database Configuration
+        st.subheader("Database Settings")
+        st.text_input("Host", value="localhost", key="Host")
+        st.text_input("Port", value="5432", key="Port")
+        st.text_input("User", value=os.getenv("DB_USER"), key="User")
+        st.text_input("Password", type="password", value=os.getenv("DB_PASSWORD"), key="Password")
+        st.text_input("Database", value="postgres", key="Database")
+        if st.button("Test Connection"):
+            with st.spinner("Testing database connection..."):
+                if connect_to_database():
+                    st.success("Connection successful!")
 
     # User input
     question = st.text_input("Input: ", key="input")
     if st.button("Ask the question") and question:
         with st.spinner("Processing your query..."):
 
-            # Get SQL query from OpenAI
-            sql_query = get_openai_response(question, PROMPT_QUERY)
+            # Get SQL query from LLM
+            sql_query = get_model_response(question, PROMPT_QUERY, st.session_state.model_choice)
             if sql_query:
                 if show_query:
                     st.subheader("Generated SQL Query:")
@@ -136,24 +174,15 @@ def main():
                             st.write(row)
 
                 # Generate humane response
-                humane_response = get_openai_response(question, PROMPT_HUMANE_RESPONSE_TEMPLATE)
+                humane_response = get_model_response(
+                    question, 
+                    PROMPT_HUMANE_RESPONSE_TEMPLATE.format(question=question, result=result),
+                    st.session_state.model_choice
+                )
                 st.subheader("AI Response:")
                 st.write(humane_response)
             else:
                 st.error("No results returned from the query.")
-
-    # Sidebar for Database Configuration
-    with st.sidebar:
-        st.subheader("Database Settings")
-        st.text_input("Host", value="localhost", key="Host")
-        st.text_input("Port", value="5432", key="Port")
-        st.text_input("User", value=os.getenv("DB_USER"), key="User")
-        st.text_input("Password", type="password", value=os.getenv("DB_PASSWORD"), key="Password")
-        st.text_input("Database", value="postgres", key="Database")
-        if st.button("Test Connection"):
-            with st.spinner("Testing database connection..."):
-                if connect_to_database():
-                    st.success("Connection successful!")
 
     # Footer
     st.markdown(
