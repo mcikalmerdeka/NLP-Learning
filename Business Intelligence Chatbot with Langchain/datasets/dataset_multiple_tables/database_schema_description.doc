@@ -1,0 +1,127 @@
+# Data Description
+
+Olist is a Brazilian e-commerce platform that connects small and medium-sized businesses to customers across Brazil. 
+The platform operates as a marketplace, where merchants can list their products and services and customers can browse and purchase them online.
+
+The Olist sales dataset is a collection of anonymized data about orders placed on the Olist from September 2016 to September 2018. 
+It contains a wide range of information about each order, including the order date, product details, payment and shipping information, customer and seller IDs, and customer reviews. 
+The dataset also includes information about the sellers who list their products on Olist, as well as data on customer behavior and demographics. 
+The dataset is designed to help analysts and researchers better understand the e-commerce landscape in Brazil and identify opportunities for growth and optimization.
+
+# Data Dictionary
+The SQL database "bi_chatbot" has these table collections with the following columns:
+
+ 1. customers
+- customer_id: Primary key. String identifier uniquely representing each customer in the orders system. Used to link to the orders table.
+- customer_unique_id: String identifier representing the actual customer entity. Multiple customer_ids can map to the same customer_unique_id if a customer makes purchases through different sessions.
+- customer_zip_code_prefix: Integer. First 5 digits of customer's postal code. Used for geographical analysis and joins with the geolocation table.
+- customer_city: String. Name of the city where the customer is located. Useful for regional sales analysis.
+- customer_state: String. Two-letter code representing the state where the customer is located. Important for regional distribution analysis.
+
+ 2. geolocation
+- geolocation_zip_code_prefix: Integer. First 5 digits of the postal code. Acts as a key to connect with customers and sellers tables.
+- geolocation_lat: Decimal. Latitude coordinate of the location. Used for mapping and distance calculations.
+- geolocation_lng: Decimal. Longitude coordinate of the location. Used together with latitude for spatial analysis.
+- geolocation_city: String. City name associated with the zip code prefix. May have variations in spelling for the same city.
+- geolocation_state: String. Two-letter state code. Important for regional analysis.
+
+ 3. orders
+- order_id: Primary key. String identifier uniquely representing each order. Links to order_items, order_payments, and order_reviews tables.
+- customer_id: Foreign key. References customers.customer_id, connecting orders to the customers who placed them.
+- order_status: String. Current status of the order in the fulfillment process (e.g., 'delivered', 'shipped', 'canceled', 'processing'). Key for order fulfillment analysis.
+- order_purchase_timestamp: Datetime. When the order was placed. Critical for time-series analysis of sales.
+- order_approved_at: Datetime. When payment for the order was approved. Can be null if payment was not approved.
+- order_delivered_carrier_date: Datetime. When the order was handed to the logistics provider. Important for delivery performance tracking.
+- order_delivered_customer_date: Datetime. When the order was actually delivered to the customer. Can be null if not yet delivered.
+- order_estimated_delivery_date: Datetime. The estimated delivery date provided to the customer at purchase time. Critical for delivery performance analysis.
+
+ 4. order_items
+- order_id: Composite primary key (with order_item_id). Foreign key referencing orders.order_id.
+- order_item_id: Composite primary key (with order_id). Integer indicating the sequence number of items within an order.
+- product_id: Foreign key referencing products.product_id. Identifies which product was purchased.
+- seller_id: Foreign key referencing sellers.seller_id. Identifies which seller is providing the item.
+- shipping_limit_date: Datetime. The deadline by which the seller must ship the product. Important for seller performance monitoring.
+- price: Decimal. The price of the product at the time of purchase in Brazilian Reals (BRL).
+- freight_value: Decimal. The shipping cost charged for the item in Brazilian Reals (BRL). Important for logistics analysis.
+
+ 5. order_payments
+- order_id: Composite primary key (with payment_sequential). Foreign key referencing orders.order_id.
+- payment_sequential: Composite primary key (with order_id). Integer indicating the sequence of payments for an order if paid in multiple installments.
+- payment_type: String. Method of payment used (e.g., 'credit_card', 'boleto', 'voucher', 'debit_card'). Important for payment trend analysis.
+- payment_installments: Integer. Number of installments the payment was divided into. Common practice in Brazilian e-commerce.
+- payment_value: Decimal. The amount paid in Brazilian Reals (BRL). May differ from the order total due to discounts, vouchers, etc.
+
+ 6. order_reviews
+- review_id: Primary key. String identifier for each review.
+- order_id: Foreign key referencing orders.order_id. Links the review to the specific order.
+- review_score: Integer (1-5). Customer satisfaction rating, where 1 is very dissatisfied and 5 is very satisfied. Critical for product and seller quality assessment.
+- review_comment_title: String. Optional title provided by the customer for their review. Can be null.
+- review_comment_message: Text. Detailed feedback provided by the customer. Can be null if no written feedback was provided.
+- review_creation_date: Datetime. When the customer created the review. Important for timing analysis.
+- review_answer_timestamp: Datetime. When the seller responded to the review, if applicable. Can be null. Useful for seller engagement analysis.
+
+ 7. products
+- product_id: Primary key. String identifier uniquely representing each product.
+- product_category_name: String. Category name in Portuguese. Foreign key linking to product_category_name_translation. Important for product categorization.
+- product_name_lenght: Integer (misspelled, should be "length"). Number of characters in the product name. Useful for listing quality analysis.
+- product_description_lenght: Integer (misspelled, should be "length"). Number of characters in the product description. Indicator of listing quality.
+- product_photos_qty: Integer. Number of photos in the product listing. Important for listing quality assessment.
+- product_weight_g: Integer. Weight of the product in grams. Critical for shipping calculations.
+- product_length_cm: Integer. Length of the product in centimeters. Used for volume and shipping calculations.
+- product_height_cm: Integer. Height of the product in centimeters. Used for volume and shipping calculations.
+- product_width_cm: Integer. Width of the product in centimeters. Used for volume and shipping calculations.
+
+ 8. sellers
+- seller_id: Primary key. String identifier uniquely representing each seller on the platform.
+- seller_zip_code_prefix: Integer. First 5 digits of the seller's postal code. Links to geolocation data.
+- seller_city: String. City where the seller is located. Important for seller distribution analysis.
+- seller_state: String. Two-letter code for the state where the seller is located. Important for regional analysis.
+
+# Table Relationship
+1.  **`customers` and `orders`**
+    *   Primary Key: `customers.customer_id`
+    *   Foreign Key: `orders.customer_id`
+    *   Relationship: One-to-Many (One customer can have multiple orders)
+    *   Description: Links customers to their respective orders.
+
+2.  **`orders` and `order_items`**
+    *   Primary Key: `orders.order_id`
+    *   Foreign Key: `order_items.order_id`
+    *   Relationship: One-to-Many (One order can consist of multiple items)
+    *   Description: Connects orders to the specific items included in each order.
+
+3.  **`orders` and `order_payments`**
+    *   Primary Key: `orders.order_id`
+    *   Foreign Key: `order_payments.order_id`
+    *   Relationship: One-to-Many (One order can have multiple payment entries, e.g., for installments or different payment methods)
+    *   Description: Links orders to their payment details.
+
+4.  **`orders` and `order_reviews`**
+    *   Primary Key: `orders.order_id`
+    *   Foreign Key: `order_reviews.order_id`
+    *   Relationship: One-to-Many (Typically one order has one review, but the structure allows for multiple)
+    *   Description: Associates orders with customer reviews.
+
+5.  **`products` and `order_items`**
+    *   Primary Key: `products.product_id`
+    *   Foreign Key: `order_items.product_id`
+    *   Relationship: One-to-Many (One product can be part of multiple order items across different orders)
+    *   Description: Links specific products to the order items where they were purchased.
+
+6.  **`sellers` and `order_items`**
+    *   Primary Key: `sellers.seller_id`
+    *   Foreign Key: `order_items.seller_id`
+    *   Relationship: One-to-Many (One seller can be associated with multiple order items)
+    *   Description: Connects sellers to the items they sold.
+
+7.  **`geolocation` and `customers`**
+    *   Primary Key: `geolocation.geolocation_zip_code_prefix` (assuming this is unique enough for this relationship, though not strictly a PK of the table itself if city/state can vary for same prefix)
+    *   Foreign Key: `customers.customer_zip_code_prefix`
+    *   Relationship: Many-to-One (Many customers can share the same geolocation zip code prefix)
+    *   Description: Links customer addresses to geographical locations.
+
+8.  **`geolocation` and `sellers`**
+    *   Primary Key: `geolocation.geolocation_zip_code_prefix` (similar assumption as above)
+    *   Foreign Key: `sellers.seller_zip_code_prefix`
+    *   Relationship: Many-to-One (Many sellers can share the same geolocation zip code prefix)
+    *   Description: Links seller addresses to geographical locations.
