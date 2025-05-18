@@ -4,7 +4,6 @@ import streamlit as st
 import psycopg2
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_anthropic import ChatAnthropic
-from langchain_core.prompts import ChatPromptTemplate
 from langchain_community.vectorstores import FAISS
 
 # Configure OpenAI API
@@ -114,7 +113,7 @@ def read_sql_query(query):
     return None
 
 # Prompt Definitions
-PROMPT_HUMANE_RESPONSE_TEMPLATE = """
+RESPONSE_GENERATION_SYSTEM_PROMPT = """
     You are a customer service agent.
 
     Previously, you were asked: "{question}"
@@ -125,16 +124,34 @@ PROMPT_HUMANE_RESPONSE_TEMPLATE = """
     you should answer "The biggest sales of product A is 1000 USD".
 """
 
-# Define functions
-def retrieve_schema(user_query):
-    """Retrieve relevant schema details from vector store."""
-    return vector_db.similarity_search(user_query, k=5)
-
-def generate_sql_query(question, retrieved_schema, model_choice):
-    """Generate SQL query based on user query and retrieved schema using LLMs."""
-    prompt = f"""
-    
+SQL_GENERATION_SYSTEM_PROMPT = """
     You are an expert in converting English questions to PostgreSQL query!
+
+    The SQL database has the table "sales" with the following columns:
+    - ORDERNUMBER: Unique identifier for sales orders
+    - QUANTITYORDERED: Number of products ordered in units
+    - SALES: Amount of sales or revenue in USD
+    - ORDERDATE: Date of the order
+    - STATUS: Current status of the order (e.g., Shipped)
+    - QTR_ID: Quarter of the year when order was placed (1-4)
+    - MONTH_ID: Month of the year when order was placed (1-12)
+    - YEAR_ID: Year when the order was placed
+    - PRODUCTLINE: Line of products
+    - MSRP: Manufacturer's suggested retail price
+    - PRODUCTCODE: Unique code identifying the product
+    - CUSTOMERNAME: Name of the customer who placed the order
+    - PHONE: Customer's phone number
+    - ADDRESSLINE1: First line of customer's address
+    - ADDRESSLINE2: Second line of customer's address (optional)
+    - CITY: Customer's city
+    - STATE: Customer's state or province
+    - POSTALCODE: Customer's postal code
+    - COUNTRY: Customer's country
+    - TERRITORY: Sales territory (e.g., NA, EMEA)
+    - CONTACTLASTNAME: Last name of the contact person
+    - CONTACTFIRSTNAME: First name of the contact person
+    - DEALSIZE: Size of the deal (Small, Medium, Large)
+
     Example SQL command: SELECT COUNT(*) FROM sales;
 
     The output should not include ``` or the word "sql".
@@ -143,7 +160,16 @@ def generate_sql_query(question, retrieved_schema, model_choice):
     {retrieved_schema}
     
     Convert this question: {question}
-    """
+"""
+
+# Define functions
+def retrieve_schema(user_query):
+    """Retrieve relevant schema details from vector store."""
+    return vector_db.similarity_search(user_query, k=5)
+
+def generate_sql_query(question, retrieved_schema, model_choice):
+    """Generate SQL query based on user query and retrieved schema using LLMs."""
+    prompt = SQL_GENERATION_SYSTEM_PROMPT.format(retrieved_schema=retrieved_schema, question=question)
     return get_model_response(prompt, model_choice)
 
 
@@ -198,7 +224,7 @@ def main():
 
                     # Generate humane response using the selected model
                     humane_response = get_model_response(
-                        PROMPT_HUMANE_RESPONSE_TEMPLATE.format(question=question, result=result), 
+                        RESPONSE_GENERATION_SYSTEM_PROMPT.format(question=question, result=result), 
                         st.session_state.model_choice
                     )
                     st.subheader("AI Response:")
