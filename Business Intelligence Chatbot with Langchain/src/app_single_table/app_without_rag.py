@@ -34,7 +34,8 @@ def get_model_response(question, prompt, model_choice):
                 messages=[
                     {"role": "system", "content": prompt},
                     {"role": "user", "content": question}
-                ]
+                ],
+                max_tokens=4000
             )
             return response.choices[0].message.content
         else:
@@ -43,7 +44,8 @@ def get_model_response(question, prompt, model_choice):
                 system=prompt,
                 messages=[
                     {"role": "user", "content": question}
-                ]
+                ],
+                max_tokens=4000
             )
             return response.content[0].text
     except Exception as e:
@@ -84,7 +86,7 @@ def read_sql_query(query):
 
 
 # Prompt Definitions
-PROMPT_QUERY = """
+SQL_GENERATION_SYSTEM_PROMPT = """
     You are an expert in converting English questions to PostgreSQL query!
 
     The SQL database "postgres" has the table "sales" and the following columns:
@@ -119,7 +121,7 @@ PROMPT_QUERY = """
     The output should not include ``` or the word "sql".
 """
 
-PROMPT_HUMANE_RESPONSE_TEMPLATE = """
+RESPONSE_GENERATION_SYSTEM_PROMPT = """
     You are a customer service agent.
 
     Previously, you were asked: "{question}"
@@ -159,7 +161,7 @@ def main():
         with st.spinner("Processing your query..."):
 
             # Get SQL query from LLM
-            sql_query = get_model_response(question, PROMPT_QUERY, st.session_state.model_choice)
+            sql_query = get_model_response(question, SQL_GENERATION_SYSTEM_PROMPT, st.session_state.model_choice)
             if sql_query:
                 if show_query:
                     st.subheader("Generated SQL Query:")
@@ -176,7 +178,7 @@ def main():
                 # Generate humane response
                 humane_response = get_model_response(
                     question, 
-                    PROMPT_HUMANE_RESPONSE_TEMPLATE.format(question=question, result=result),
+                    RESPONSE_GENERATION_SYSTEM_PROMPT.format(question=question, result=result),
                     st.session_state.model_choice
                 )
                 st.subheader("AI Response:")
