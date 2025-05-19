@@ -1,10 +1,13 @@
 import os
-from dotenv import load_dotenv
 import streamlit as st
 import psycopg2
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_anthropic import ChatAnthropic
 from langchain_community.vectorstores import FAISS
+from dotenv import load_dotenv
+
+# Configure Streamlit page
+st.set_page_config(page_title="Chat with your database through LLMs")
 
 # Configure OpenAI API
 load_dotenv()
@@ -48,25 +51,40 @@ def generate_vector_index(text_segments):
         text_segments (list): List of text chunks to be embedded and indexed.
 
     Returns:
-        None: The FAISS index is saved locally as 'faiss_index_store'.
+        FAISS vector store: The loaded or newly created vector store
     """
     embed_model = OpenAIEmbeddings(model="text-embedding-3-large")
     vector_db = FAISS.from_texts(text_segments, embedding=embed_model)
     vector_db.save_local("faiss_index_store")
     return vector_db
 
-vector_db = generate_vector_index(schema_descriptions)
+# Load or create vector database
+def load_or_create_vector_db():
+    """Load existing vector database or create a new one if it doesn't exist."""
+    if os.path.exists("faiss_index_store"):
+        try:
+            embed_model = OpenAIEmbeddings(model="text-embedding-3-large")
+            return FAISS.load_local("faiss_index_store", embed_model, allow_dangerous_deserialization=True)
+        except Exception as e:
+            st.warning(f"Error loading existing index: {e}. Creating new index...")
+    
+    # If index doesn't exist or loading failed, create a new one
+    return generate_vector_index(schema_descriptions)
+
+# Load vector database once at startup
+vector_db = load_or_create_vector_db()
 
 # Utility Functions
 def configure_streamlit():
     """Configure the Streamlit app settings."""
-    st.set_page_config(page_title="Chat with your database through LLMs")    
     st.header("Chat with your database through LLMs")
 
 def initialize_language_model(model_choice):
     """Initialize the chosen language model."""
     if model_choice == "GPT-4o":
         return ChatOpenAI(api_key=openai_api_key, model="gpt-4o")
+    elif model_choice == "GPT-4.1":
+        return ChatOpenAI(api_key=openai_api_key, model="gpt-4.1")
     else:
         return ChatAnthropic(api_key=anthropic_api_key, model="claude-3-7-sonnet-20250219")
 
@@ -152,8 +170,23 @@ SQL_GENERATION_SYSTEM_PROMPT = """
     - CONTACTFIRSTNAME: First name of the contact person
     - DEALSIZE: Size of the deal (Small, Medium, Large)
 
-    Example SQL command: SELECT COUNT(*) FROM sales;
-
+    Format your SQL query with proper indentation, line breaks, and alignment to make it readable. 
+    For example:
+    
+    SELECT 
+        column1,
+        column2,
+        COUNT(column3) AS count_alias
+    FROM 
+        table_name
+    WHERE 
+        condition = 'value'
+    GROUP BY 
+        column1, 
+        column2
+    ORDER BY 
+        count_alias DESC;
+    
     The output should not include ``` or the word "sql".
     
     Based on the following database schema:
@@ -178,11 +211,21 @@ def main():
     show_query = True # Show query for debugging
     configure_streamlit()
     
+    # Add application explanation
+    st.expander("ℹ️ About Single-Table Database Chat with RAG").markdown(
+    """
+        - This app allows you to ask questions about your sales database in natural language.
+        - The AI assistant uses RAG (Retrieval-Augmented Generation) to find relevant schema information.
+        - Your question is converted into SQL, the database is queried, and you get a friendly response.
+        - Choose an AI model from the sidebar and connect to your database to get started!
+    """
+    )
+    
     # Sidebar for UI Configuration
     with st.sidebar:
         # Sidebar for Model Configuration
         st.subheader("Model Settings")
-        model_choice = st.selectbox("Select a model", ["GPT-4o", "Claude 3.7 Sonnet"], key="model_choice")
+        model_choice = st.selectbox("Select a model", ["GPT-4o", "GPT-4.1", "Claude 3.7 Sonnet"], key="model_choice")
 
         # Sidebar for Database Configuration
         st.subheader("Database Settings")
@@ -190,7 +233,7 @@ def main():
         st.text_input("Port", value="5432", key="Port")
         st.text_input("User", value=os.getenv("DB_USER"), key="User")
         st.text_input("Password", type="password", value=os.getenv("DB_PASSWORD"), key="Password")
-        st.text_input("Database", value="postgres", key="Database")
+        st.text_input("Database", value=os.getenv("DB_NAME_1"), key="Database")
         if st.button("Test Connection"):
             with st.spinner("Testing database connection..."):
                 if connect_to_database():
@@ -212,7 +255,7 @@ def main():
             if sql_query:
                 if show_query:
                     st.subheader("Generated SQL Query:")
-                    st.write(sql_query)
+                    st.code(sql_query, language="sql")
 
                 # Execute the SQL query
                 result = read_sql_query(sql_query)
