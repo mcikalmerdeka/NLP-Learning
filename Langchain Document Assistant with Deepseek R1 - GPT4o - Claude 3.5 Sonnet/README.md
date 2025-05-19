@@ -6,7 +6,7 @@ A powerful LLM-powered document assistant that extracts information from various
 
 ## 🚀 Features
 
-- **Multiple LLM Support**: Integrates with GPT-4o, Claude 3.7 Sonnet, and DeepSeek-R1 models
+- **Multiple LLM Support**: Integrates with GPT-4o, GPT-4.1, Claude 3.7 Sonnet, and DeepSeek-R1 models
 - **Document Processing**: Efficiently processes PDF documents, extracting and indexing their content
 - **Semantic Search**: Uses vector embeddings to find the most relevant information from your documents
 - **Conversational Interface**: Clean, intuitive chat interface to ask questions about your documents
@@ -95,6 +95,7 @@ streamlit run rag_deepseek_r1.py
 | Model             | Type  | Best For                                  | Required Setup      | Implementation                            |
 | ----------------- | ----- | ----------------------------------------- | ------------------- | ----------------------------------------- |
 | GPT-4o            | Cloud | High accuracy, complex queries            | OpenAI API key      | ChatOpenAI with temperature=0             |
+| GPT-4.1           | Cloud | Latest OpenAI model with improved reasoning | OpenAI API key    | ChatOpenAI with temperature=0             |
 | Claude 3.7 Sonnet | Cloud | Nuanced understanding, detailed responses | Anthropic API key   | ChatAnthropic with temperature=0          |
 | DeepSeek R1       | Local | Privacy, offline use, faster responses    | Ollama installation | OllamaLLM with the deepseek-r1:1.5b model |
 

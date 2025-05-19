@@ -103,6 +103,7 @@ DOCUMENT_VECTOR_DB = InMemoryVectorStore(EMBEDDING_MODEL)
 # Model options
 MODEL_OPTIONS = {
     "GPT-4o": "gpt-4o",
+    "GPT-4.1": "gpt-4.1",
     "Claude 3.7 Sonnet": "claude-3-7-sonnet-20250219"
 }
 
@@ -112,6 +113,13 @@ def initialize_language_model(model_choice):
         return ChatOpenAI(
             api_key=os.getenv("OPENAI_API_KEY"),
             model="gpt-4o",
+            temperature=0,
+            max_tokens=1024
+        )
+    elif model_choice == "GPT-4.1":
+        return ChatOpenAI(
+            api_key=os.getenv("OPENAI_API_KEY"),
+            model="gpt-4.1",
             temperature=0,
             max_tokens=1024
         )
