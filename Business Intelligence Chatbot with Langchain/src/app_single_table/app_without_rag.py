@@ -1,9 +1,9 @@
 import os
-from dotenv import load_dotenv
 import streamlit as st
 import psycopg2
 from openai import OpenAI
 from anthropic import Anthropic
+from dotenv import load_dotenv
 
 # Configure APIs
 load_dotenv()
