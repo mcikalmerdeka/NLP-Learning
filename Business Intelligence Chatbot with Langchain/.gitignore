@@ -1,4 +1,6 @@
 .env
 .venv
+.vscode
 *.ipynb
 **/faiss_index_store/
+check_database_olist.sql
