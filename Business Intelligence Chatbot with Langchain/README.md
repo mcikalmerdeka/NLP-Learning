@@ -2,9 +2,9 @@
 
 ![Project Header](https://raw.githubusercontent.com/mcikalmerdeka/NLP-Learning/refs/heads/main/Business%20Intelligence%20Chatbot%20with%20Langchain/assets/Project%20Header.jpg)
 
-This repo is for using LLMs to chat with your SQL database. Inspired by this [Gemini Chatbot repo](https://github.com/ardyadipta/gemini_chatbot_sql). Instead of using MySQL I used PostgreSQL and instead of using Google Gemini model series, I experimented using OpenAI (GPT-4.1) and Anthropic (Claude 3.7 Sonnet) model which I am more familiar with and also wanted to try experiment with local models usage such as Deepseek-r1:1.5b and Qwen3:1.7b that is installed in my PC.
+This repo is for using LLMs to chat with your SQL database. Inspired by this [Gemini Chatbot repo](https://github.com/ardyadipta/gemini_chatbot_sql). Instead of using MySQL I used PostgreSQL and instead of using Google Gemini model series, I experimented using OpenAI (GPT-4.1 and GPT-4o) and Anthropic (Claude 3.7 Sonnet) model which I am more familiar with and `also later` wanted to try experiment with local models usage such as Deepseek-r1:1.5b and Qwen3:1.7b that is installed in my PC.
 
-## Objective and Project Origin
+## 🎯 Objective and Project Origin
 
 Around February 2025, I was quite curious if there was a way where we can retrieve data in a database without having to write sql queries, but only using natural language. So initially I tried to search online and the first thing I found was using a library called PandasAI. But there are major limitations on the usage limits in using the API on the free tier and upgrading to another tier costs way too much (around 200 euro per month as of May 2025). So I need to find another way to do database chat but with a more manageable cost and full control over the platform's behavior. But I couldn't find it at that time.
 
@@ -14,28 +14,45 @@ One month later, I watched the [conference talk](https://youtu.be/wN3T5NCTSAY?t=
 
 And in this project we will try to implement that approach.
 
-## Project Structure
+## 📁 Project Structure
 
-- `app_with_rag.py`: Main application incorporating RAG (Retrieval-Augmented Generation) for better database schema understanding
-- `app_without_rag.py`: Simplified version without the RAG approach
-- `database_setup.py`: Script to set up PostgreSQL database with sample sales data
-- `dataset_experiments/`: Contains the raw data used for this project
+The project now has two main approaches:
 
-## Features
+### Single Table Approach
+
+Analysis of sales data using a single database table:
+
+- `src/app_single_table/app_with_rag.py`: Main application incorporating RAG for better schema understanding
+- `src/app_single_table/app_without_rag.py`: Simplified version without the RAG approach
+- `src/app_single_table/database_setup_single_table.py`: Script to set up PostgreSQL database with sample sales data
+- `datasets/dataset_single_table/`: Contains the sales data CSV used for this approach
+
+### Multiple Tables Approach
+
+Analysis of e-commerce data (Olist) using multiple related tables:
+
+- `src/app_multiple_tables/app_with_rag.py`: Enhanced version supporting multiple table queries with RAG
+- `src/app_multiple_tables/app_without_rag.py`: Basic version for multiple tables without RAG
+- `src/app_multiple_tables/database_setup_multiple_tables.py`: Script to set up database with Olist e-commerce data
+- `datasets/dataset_multiple_tables/`: Contains the Olist e-commerce datasets with multiple related tables
+
+## 🚀 Features
 
 - **Natural Language to SQL Conversion**: Convert plain English queries into SQL statements
 - **RAG-Enhanced Architecture**: Uses retrieval-augmented generation to improve contextual understanding of database schema
+- **Multi-Table Support**: Analyze data across multiple related tables (Olist e-commerce dataset)
+- **Single Table Analysis**: Simpler analysis for sales data scenarios
 - **Streamlit UI**: User-friendly interface for interacting with the database
-- **Multiple LLM Support**: Compatible with OpenAI (GPT-4o) and potential support for Anthropic (Claude) and local models
+- **Multiple LLM Support**: Compatible with OpenAI (GPT-4o), Anthropic (Claude 3.7 Sonnet), and potential support for local models
 - **Detailed Response Generation**: Formats query results into natural, conversational responses
 
-## Setup and Installation
+## 🔧 Setup and Installation
 
 ### Prerequisites
 
 - Python 3.11+
 - PostgreSQL database
-- OpenAI API key
+- OpenAI API key and/or Anthropic API key
 
 ### Installation
 
@@ -53,16 +70,17 @@ And in this project we will try to implement that approach.
    pip install -e .
    ```
 
-   Using uv package manager:
+   Using uv package manager (recommended):
 
    ```
-   uv add faiss-cpu langchain langchain-community langchain-openai numpy openai pandas psycopg2 python-dotenv streamlit
+   uv pip install -e .
    ```
 
-   Required dependencies:
+   Required dependencies (from pyproject.toml):
 
    - faiss-cpu>=1.11.0
    - langchain>=0.3.25
+   - langchain-anthropic>=0.3.13
    - langchain-community>=0.3.24
    - langchain-openai>=0.3.16
    - numpy>=2.2.5
@@ -75,40 +93,77 @@ And in this project we will try to implement that approach.
 
    ```
    OPENAI_API_KEY=your_openai_api_key
+   ANTHROPIC_API_KEY=your_anthropic_api_key
    DB_USER=your_database_username
    DB_PASSWORD=your_database_password
+   DB_HOST=your_database_host
+   DB_PORT=your_database_port
    ```
 4. Set up the database:
 
+   For single table approach:
+
    ```
-   python database_setup.py
+   python src/app_single_table/database_setup_single_table.py
    ```
 
-## Usage
+   For multiple tables approach:
+
+   ```
+   python src/app_multiple_tables/database_setup_multiple_tables.py
+   ```
+
+## 💻 Usage
+
+### Single Table Approach
 
 1. Launch the application with RAG:
 
    ```
-   streamlit run app_with_rag.py
+   streamlit run src/app_single_table/app_with_rag.py
    ```
 
    Or without RAG:
 
    ```
-   streamlit run app_without_rag.py
+   streamlit run src/app_single_table/app_without_rag.py
    ```
 2. Access the application at `http://localhost:8501`
 3. Configure your database connection in the sidebar
 4. Start asking questions in natural language about your sales data!
 
-Example queries:
+Example queries for sales data:
 
 - "What were the total sales in 2003 and 2004?"
 - "Show me the top 5 customers by revenue"
 - "What is the phone number of customer name Toys of Finland, Co.?"
 - "Which product line has the highest average order value?"
 
-## How It Works
+### Multiple Tables Approach
+
+1. Launch the application with RAG:
+
+   ```
+   streamlit run src/app_multiple_tables/app_with_rag.py
+   ```
+
+   Or without RAG:
+
+   ```
+   streamlit run src/app_multiple_tables/app_without_rag.py
+   ```
+2. Access the application at `http://localhost:8501`
+3. Configure your database connection in the sidebar
+4. Start asking questions in natural language about the Olist e-commerce data!
+
+Example queries for Olist e-commerce data:
+
+- "What is the average monthly active user count for each year?"
+- "Show me the number of customers who made more than one purchase (repeat orders) for each year!"
+- "What are the top product categories by revenue per month?"
+- "Displays detailed information on the amount of usage for each type of payment for each year!"
+
+## ⚙️ How It Works
 
 1. **Without RAG (Basic Approach)**:
 
@@ -123,18 +178,14 @@ Example queries:
    - This context-enriched information is sent to the LLM for SQL generation
    - The generated SQL is executed and results formatted into natural language
 
-## Future Improvements
+## 🔮 Future Improvements
 
 - Support for more complex database schemas and relationships
-- Integration with additional LLM providers and local models
+- Integration with additional LLM providers and local models (Deepseek-r1:1.5b and Qwen3:1.7b)
 - Advanced data visualization of query results
 - Fine-tuning models for improved SQL generation accuracy
 - Support for database operations beyond querying (e.g., inserts, updates)
 
-## License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## Contact
+## 📧 Contact
 
 For questions or feedback, please contact: mcikalmerdeka@gmail.com
