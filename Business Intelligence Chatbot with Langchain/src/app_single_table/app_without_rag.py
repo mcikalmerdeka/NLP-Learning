@@ -18,7 +18,7 @@ def configure_streamlit():
 
 def initialize_language_model(model_choice):
     """Initialize the chosen language model client."""
-    if model_choice == "GPT-4o":
+    if model_choice == "GPT-4o" or model_choice == "GPT-4.1":
         return OpenAI(api_key=openai_api_key)
     else:
         return Anthropic(api_key=anthropic_api_key)
@@ -31,6 +31,16 @@ def get_model_response(question, prompt, model_choice):
         if model_choice == "GPT-4o":
             response = client.chat.completions.create(
                 model="gpt-4o",
+                messages=[
+                    {"role": "system", "content": prompt},
+                    {"role": "user", "content": question}
+                ],
+                max_tokens=4000
+            )
+            return response.choices[0].message.content
+        elif model_choice == "GPT-4.1":
+            response = client.chat.completions.create(
+                model="gpt-4.1",
                 messages=[
                     {"role": "system", "content": prompt},
                     {"role": "user", "content": question}
@@ -116,7 +126,22 @@ SQL_GENERATION_SYSTEM_PROMPT = """
     - CONTACTFIRSTNAME: First name of the contact person
     - DEALSIZE: Size of the deal (Small, Medium, Large)
 
-    Example SQL command: SELECT COUNT(*) FROM sales;
+    Format your SQL query with proper indentation, line breaks, and alignment to make it readable. 
+    For example:
+    
+    SELECT 
+        column1,
+        column2,
+        COUNT(column3) AS count_alias
+    FROM 
+        table_name
+    WHERE 
+        condition = 'value'
+    GROUP BY 
+        column1, 
+        column2
+    ORDER BY 
+        count_alias DESC;
 
     The output should not include ``` or the word "sql".
 """
@@ -137,11 +162,20 @@ def main():
     show_query = True # Show query for debugging
     configure_streamlit()
     
+    # Add application explanation
+    st.expander("ℹ️ About Single-Table Database Chat").markdown(
+    """
+        - This app allows you to ask questions about your sales database in natural language.
+        - The AI assistant will convert your question into SQL, query the database, and provide a friendly response.
+        - Choose an AI model from the sidebar and connect to your database to get started!
+    """
+    )
+    
     # Sidebar for UI Configuration
     with st.sidebar:
         # Sidebar for Model Configuration
         st.subheader("Model Settings")
-        model_choice = st.selectbox("Select a model", ["GPT-4o", "Claude 3.7 Sonnet"], key="model_choice")
+        model_choice = st.selectbox("Select a model", ["GPT-4o", "GPT-4.1", "Claude 3.7 Sonnet"], key="model_choice")
 
         # Sidebar for Database Configuration
         st.subheader("Database Settings")
@@ -149,7 +183,7 @@ def main():
         st.text_input("Port", value="5432", key="Port")
         st.text_input("User", value=os.getenv("DB_USER"), key="User")
         st.text_input("Password", type="password", value=os.getenv("DB_PASSWORD"), key="Password")
-        st.text_input("Database", value="postgres", key="Database")
+        st.text_input("Database", value=os.getenv("DB_NAME_1"), key="Database")
         if st.button("Test Connection"):
             with st.spinner("Testing database connection..."):
                 if connect_to_database():
@@ -165,7 +199,7 @@ def main():
             if sql_query:
                 if show_query:
                     st.subheader("Generated SQL Query:")
-                    st.write(sql_query)
+                    st.code(sql_query, language="sql")
 
                 # Execute the SQL query
                 result = read_sql_query(sql_query)
