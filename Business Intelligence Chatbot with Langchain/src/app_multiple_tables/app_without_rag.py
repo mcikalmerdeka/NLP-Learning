@@ -15,6 +15,10 @@ def configure_streamlit():
     """Configure the Streamlit app settings."""
     st.set_page_config(page_title="Chat with your database through LLMs")    
     st.header("Chat with your database through LLMs")
+    
+    # Initialize chat history in session state if it doesn't exist
+    if "chat_history" not in st.session_state:
+        st.session_state.chat_history = []
 
 def initialize_language_model(model_choice):
     """Initialize the chosen language model client."""
@@ -23,38 +27,49 @@ def initialize_language_model(model_choice):
     else:
         return Anthropic(api_key=anthropic_api_key)
 
-def get_model_response(question, prompt, model_choice):
+def get_model_response(question, prompt, model_choice, history=None):
     """Get response from the selected LLM."""
     try:
         client = initialize_language_model(model_choice)
         
         if model_choice == "GPT-4o":
+            messages = [
+                {"role": "system", "content": prompt},
+            ]
+            if history:
+                messages.extend(history)
+            messages.append({"role": "user", "content": question})
+            
             response = client.chat.completions.create(
                 model="gpt-4o",
-                messages=[
-                    {"role": "system", "content": prompt},
-                    {"role": "user", "content": question}
-                ],
+                messages=messages,
                 max_tokens=4000
             )
             return response.choices[0].message.content
         elif model_choice == "GPT-4.1":
+            messages = [
+                {"role": "system", "content": prompt},
+            ]
+            if history:
+                messages.extend(history)
+            messages.append({"role": "user", "content": question})
+            
             response = client.chat.completions.create(
                 model="gpt-4.1",
-                messages=[
-                    {"role": "system", "content": prompt},
-                    {"role": "user", "content": question}
-                ],
+                messages=messages,
                 max_tokens=4000
             )
             return response.choices[0].message.content
         else:
+            messages = []
+            if history:
+                messages.extend(history)
+            messages.append({"role": "user", "content": question})
+            
             response = client.messages.create(
                 model="claude-3-7-sonnet-20250219",
                 system=prompt,
-                messages=[
-                    {"role": "user", "content": question}
-                ],
+                messages=messages,
                 max_tokens=4000
             )
             return response.content[0].text
@@ -99,6 +114,10 @@ def load_database_schema_description():
     with open(r"E:\NLP Learning\NLP-Learning\Business Intelligence Chatbot with Langchain\datasets\dataset_multiple_tables\database_schema_description.doc", "r") as file:
         return file.read()
 
+def clear_chat_history():
+    """Clear the chat history from session state."""
+    st.session_state.chat_history = []
+
 # Prompt Definitions
 SQL_GENERATION_SYSTEM_PROMPT = """
     You are an expert in converting English questions to PostgreSQL query!
@@ -127,6 +146,8 @@ SQL_GENERATION_SYSTEM_PROMPT = """
 
     The output should not include ``` or the word "sql".
     Also please be careful with ambiguous column names when joining tables, make sure to use the proper table name or alias in front of the column name.
+    
+    Remember previous questions and context when generating SQL for follow-up questions.
 """
 
 RESPONSE_GENERATION_SYSTEM_PROMPT = """
@@ -138,6 +159,8 @@ RESPONSE_GENERATION_SYSTEM_PROMPT = """
     Please respond to the user in a humane and friendly and detailed manner.
     For example, if the question is "What is the biggest sales of product A?", 
     you should answer "The biggest sales of product A is 1000 USD".
+    
+    Remember the conversation history for context when answering follow-up questions.
 """
 
 # Main Application Logic
@@ -152,6 +175,7 @@ def main():
         - The AI assistant will convert your question into SQL, query the database, and provide a detailed analysis.
         - The system loads the full database schema to understand table relationships.
         - Choose an AI model from the sidebar and connect to your database to get started!
+        - The chat has memory, so you can ask follow-up questions.
     """
     )
     
@@ -172,14 +196,42 @@ def main():
             with st.spinner("Testing database connection..."):
                 if connect_to_database():
                     st.success("Connection successful!")
+                    
+        # Clear chat button
+        st.subheader("Chat Controls")
+        if st.button("Clear Chat History"):
+            clear_chat_history()
+            st.success("Chat history cleared!")
+
+    # Display chat history
+    for message in st.session_state.chat_history:
+        if message["role"] == "user":
+            st.chat_message("user").write(message["content"])
+        else:
+            st.chat_message("assistant").write(message["content"])
 
     # User input
-    question = st.text_input("Input: ", key="input")
-    if st.button("Ask the question") and question:
+    question = st.chat_input("Ask a question about your database")
+    
+    if question:
+        # Display user message
+        st.chat_message("user").write(question)
+        
+        # Add user message to chat history
+        st.session_state.chat_history.append({"role": "user", "content": question})
+        
         with st.spinner("Processing your query..."):
+            # Extract conversation history for context (excluding the current question)
+            model_history = st.session_state.chat_history[:-1] if len(st.session_state.chat_history) > 1 else None
 
             # Get SQL query from LLM
-            sql_query = get_model_response(question, SQL_GENERATION_SYSTEM_PROMPT.format(database_schema_description=load_database_schema_description()), st.session_state.model_choice)
+            sql_query = get_model_response(
+                question, 
+                SQL_GENERATION_SYSTEM_PROMPT.format(database_schema_description=load_database_schema_description()), 
+                st.session_state.model_choice,
+                model_history
+            )
+            
             if sql_query:
                 if show_query:
                     st.subheader("Generated SQL Query:")
@@ -193,16 +245,31 @@ def main():
                         for row in result:
                             st.write(row)
 
-                # Generate humane response
-                humane_response = get_model_response(
-                    question, 
-                    RESPONSE_GENERATION_SYSTEM_PROMPT.format(question=question, result=result),
-                    st.session_state.model_choice
-                )
-                st.subheader("AI Response:")
-                st.write(humane_response)
+                    # Generate humane response
+                    humane_response = get_model_response(
+                        question, 
+                        RESPONSE_GENERATION_SYSTEM_PROMPT.format(question=question, result=result),
+                        st.session_state.model_choice,
+                        model_history
+                    )
+                    
+                    # Display assistant response
+                    st.chat_message("assistant").write(humane_response)
+                    
+                    # Add assistant response to chat history
+                    st.session_state.chat_history.append({"role": "assistant", "content": humane_response})
+                else:
+                    error_message = "No results returned from the query."
+                    st.error(error_message)
+                    
+                    # Add error message to chat history as assistant response
+                    st.session_state.chat_history.append({"role": "assistant", "content": error_message})
             else:
-                st.error("No results returned from the query.")
+                error_message = "Failed to generate SQL query."
+                st.error(error_message)
+                
+                # Add error message to chat history as assistant response
+                st.session_state.chat_history.append({"role": "assistant", "content": error_message})
 
     # Footer
     st.markdown(

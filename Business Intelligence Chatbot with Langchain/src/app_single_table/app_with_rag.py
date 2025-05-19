@@ -14,6 +14,10 @@ load_dotenv()
 openai_api_key = os.getenv("OPENAI_API_KEY")
 anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
 
+# Initialize chat history in session state if it doesn't exist
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+
 # Mock database schema and descriptions
 schema_descriptions = [
     "Table: sales, Column: ORDERNUMBER, Description: Unique identifier for sales order",
@@ -88,10 +92,22 @@ def initialize_language_model(model_choice):
     else:
         return ChatAnthropic(api_key=anthropic_api_key, model="claude-3-7-sonnet-20250219")
 
-def get_model_response(prompt, model_choice):
+def get_model_response(prompt, model_choice, history=None):
     """Get response from the LLM."""
     try:
         client = initialize_language_model(model_choice)
+        
+        # Include history context if available
+        if history:
+            # Prepare history in format that works with LangChain
+            context = "\nPrevious conversation:\n"
+            for msg in history:
+                role = "User" if msg["role"] == "user" else "Assistant"
+                context += f"{role}: {msg['content']}\n"
+            
+            # Append context to prompt
+            prompt += context
+            
         response = client.invoke(prompt)
         return response.content
     except Exception as e:
@@ -130,6 +146,10 @@ def read_sql_query(query):
             connection.close()
     return None
 
+def clear_chat_history():
+    """Clear the chat history from session state."""
+    st.session_state.chat_history = []
+
 # Prompt Definitions
 RESPONSE_GENERATION_SYSTEM_PROMPT = """
     You are a customer service agent.
@@ -140,6 +160,8 @@ RESPONSE_GENERATION_SYSTEM_PROMPT = """
     Please respond to the customer in a humane and friendly and detailed manner.
     For example, if the question is "What is the biggest sales of product A?", 
     you should answer "The biggest sales of product A is 1000 USD".
+    
+    Remember the conversation history for context when answering follow-up questions.
 """
 
 SQL_GENERATION_SYSTEM_PROMPT = """
@@ -193,6 +215,8 @@ SQL_GENERATION_SYSTEM_PROMPT = """
     {retrieved_schema}
     
     Convert this question: {question}
+    
+    Remember previous questions and context when generating SQL for follow-up questions.
 """
 
 # Define functions
@@ -200,10 +224,10 @@ def retrieve_schema(user_query):
     """Retrieve relevant schema details from vector store."""
     return vector_db.similarity_search(user_query, k=5)
 
-def generate_sql_query(question, retrieved_schema, model_choice):
+def generate_sql_query(question, retrieved_schema, model_choice, history=None):
     """Generate SQL query based on user query and retrieved schema using LLMs."""
     prompt = SQL_GENERATION_SYSTEM_PROMPT.format(retrieved_schema=retrieved_schema, question=question)
-    return get_model_response(prompt, model_choice)
+    return get_model_response(prompt, model_choice, history)
 
 
 # Main Application Logic
@@ -218,6 +242,7 @@ def main():
         - The AI assistant uses RAG (Retrieval-Augmented Generation) to find relevant schema information.
         - Your question is converted into SQL, the database is queried, and you get a friendly response.
         - Choose an AI model from the sidebar and connect to your database to get started!
+        - The chat has memory, so you can ask follow-up questions.
     """
     )
     
@@ -238,20 +263,43 @@ def main():
             with st.spinner("Testing database connection..."):
                 if connect_to_database():
                     st.success("Connection successful!")
+        
+        # Clear chat button
+        st.subheader("Chat Controls")
+        if st.button("Clear Chat History"):
+            clear_chat_history()
+            st.success("Chat history cleared!")
+
+    # Display chat history
+    for message in st.session_state.chat_history:
+        if message["role"] == "user":
+            st.chat_message("user").write(message["content"])
+        else:
+            st.chat_message("assistant").write(message["content"])
 
     # User input
-    question = st.text_input("Input: ", key="input")
-
-    if st.button("Ask the question") and question:
+    question = st.chat_input("Ask a question about your sales data")
+    
+    if question:
+        # Display user message
+        st.chat_message("user").write(question)
+        
+        # Add user message to chat history
+        st.session_state.chat_history.append({"role": "user", "content": question})
+        
         with st.spinner("Processing your query..."):
+            # Extract conversation history for context (excluding the current question)
+            model_history = st.session_state.chat_history[:-1] if len(st.session_state.chat_history) > 1 else None
+            
             schema_docs = retrieve_schema(question)
             retrieved_schema = "\n".join([doc.page_content for doc in schema_docs])
 
-            st.subheader("Retrieved Schema Details")
-            st.write(retrieved_schema)
+            if show_query:
+                st.subheader("Retrieved Schema Details")
+                st.write(retrieved_schema)
 
             # Get SQL query using the selected model
-            sql_query = generate_sql_query(question, retrieved_schema, st.session_state.model_choice)
+            sql_query = generate_sql_query(question, retrieved_schema, st.session_state.model_choice, model_history)
             if sql_query:
                 if show_query:
                     st.subheader("Generated SQL Query:")
@@ -268,14 +316,27 @@ def main():
                     # Generate humane response using the selected model
                     humane_response = get_model_response(
                         RESPONSE_GENERATION_SYSTEM_PROMPT.format(question=question, result=result), 
-                        st.session_state.model_choice
+                        st.session_state.model_choice,
+                        model_history
                     )
-                    st.subheader("AI Response:")
-                    st.write(humane_response)
+                    
+                    # Display assistant response
+                    st.chat_message("assistant").write(humane_response)
+                    
+                    # Add assistant response to chat history
+                    st.session_state.chat_history.append({"role": "assistant", "content": humane_response})
                 else:
-                    st.error("No results returned from the query.")
+                    error_message = "No results returned from the query."
+                    st.error(error_message)
+                    
+                    # Add error message to chat history as assistant response
+                    st.session_state.chat_history.append({"role": "assistant", "content": error_message})
             else:
-                st.error("Failed to generate SQL query.")
+                error_message = "Failed to generate SQL query."
+                st.error(error_message)
+                
+                # Add error message to chat history as assistant response
+                st.session_state.chat_history.append({"role": "assistant", "content": error_message})
 
     # Footer
     st.markdown(
