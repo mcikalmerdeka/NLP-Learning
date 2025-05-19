@@ -45,6 +45,9 @@ Analysis of e-commerce data (Olist) using multiple related tables:
 - **Streamlit UI**: User-friendly interface for interacting with the database
 - **Multiple LLM Support**: Compatible with OpenAI (GPT-4o), Anthropic (Claude 3.7 Sonnet), and potential support for local models
 - **Detailed Response Generation**: Formats query results into natural, conversational responses
+- **Conversational Memory**: Maintains chat history to support follow-up questions and contextual conversations
+- **Clear Chat Functionality**: Easily reset conversations with a "Clear Chat History" button in the sidebar
+- **Chat Interface**: Modern chat-style UI for a more natural conversation experience
 
 ## 🔧 Setup and Installation
 
@@ -138,6 +141,8 @@ Example queries for sales data:
 - "Show me the top 5 customers by revenue"
 - "What is the phone number of customer name Toys of Finland, Co.?"
 - "Which product line has the highest average order value?"
+- "What about for 2005?" (follow-up question example)
+- "Which of them had the highest growth?" (contextual follow-up)
 
 ### Multiple Tables Approach
 
@@ -162,6 +167,8 @@ Example queries for Olist e-commerce data:
 - "Show me the number of customers who made more than one purchase (repeat orders) for each year!"
 - "What are the top product categories by revenue per month?"
 - "Displays detailed information on the amount of usage for each type of payment for each year!"
+- "Which one showed the most significant increase?" (follow-up question)
+- "Break down those results by customer location" (contextual follow-up)
 
 ## ⚙️ How It Works
 
@@ -171,12 +178,14 @@ Example queries for Olist e-commerce data:
    - LLM converts it to SQL based on predefined schema information
    - SQL query is executed against the database
    - Results are passed back to LLM for human-friendly response generation
+   - Conversation context is maintained for follow-up questions
 2. **With RAG (Enhanced Approach)**:
 
    - Database schema descriptions are embedded and stored in a FAISS index
    - When a query is received, the system retrieves relevant schema information
    - This context-enriched information is sent to the LLM for SQL generation
    - The generated SQL is executed and results formatted into natural language
+   - Chat history provides context for follow-up questions
 
 ## 🔮 Future Improvements
 
@@ -185,6 +194,8 @@ Example queries for Olist e-commerce data:
 - Advanced data visualization of query results
 - Fine-tuning models for improved SQL generation accuracy
 - Support for database operations beyond querying (e.g., inserts, updates)
+- Enhanced conversation memory management for longer discussions
+- User authentication and personalized query history
 
 ## 📧 Contact
 
