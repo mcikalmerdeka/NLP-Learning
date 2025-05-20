@@ -210,6 +210,7 @@ SQL_GENERATION_SYSTEM_PROMPT = """
         count_alias DESC;
     
     The output should not include ``` or the word "sql".
+    And should not include any other like conversational response from your system, just the SQL query.
     
     Based on the following database schema:
     {retrieved_schema}

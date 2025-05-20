@@ -145,6 +145,7 @@ SQL_GENERATION_SYSTEM_PROMPT = """
         num_usage_2018 DESC;
 
     The output should not include ``` or the word "sql".
+    And should not include any other like conversational response from your system, just the SQL query.
     Also please be careful with ambiguous column names when joining tables, make sure to use the proper table name or alias in front of the column name.
     
     Remember previous questions and context when generating SQL for follow-up questions.

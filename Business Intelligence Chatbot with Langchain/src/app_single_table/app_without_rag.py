@@ -163,6 +163,7 @@ SQL_GENERATION_SYSTEM_PROMPT = """
         count_alias DESC;
 
     The output should not include ``` or the word "sql".
+    And should not include any other like conversational response from your system, just the SQL query.
     
     Remember previous questions and context when generating SQL for follow-up questions.
 """
