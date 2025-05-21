@@ -200,3 +200,27 @@ Example queries for Olist e-commerce data:
 ## 📧 Contact
 
 For questions or feedback, please contact: mcikalmerdeka@gmail.com
+
+## Project Screenshots
+
+In this demo I used the multi-table approach using RAG implementation. The screenshots showcase how the Business Intelligence Chatbot interacts with a complex database schema using natural language processing and SQL generation capabilities.
+
+### Database Connect, Initial Question, and Context Retrieval
+
+![Part 1](./assets/Project%20Screenshot%201.png)
+
+*The interface allows users to connect to their database and begin querying immediately. After establishing the connection, the system retrieves and processes the database schema information, allowing users to ask specific questions about the data in natural language without needing to write SQL queries manually.*
+
+### Query Generation and Model Response
+
+![Part 2](./assets/Project%20Screenshot%202.png)
+![Part 3](./assets/Project%20Screenshot%203.png)
+
+*The AI assistant retrieves relevant schema context and automatically generates the appropriate SQL query based on the user's natural language question. The query is executed against the database, and results are returned in both raw format and a user-friendly interpretation. The LLM analyzes the query results and presents them with meaningful insights, transforming complex data into actionable business intelligence.*
+
+### Follow-up Question Capabilities
+
+![Part 4](./assets/Project%20Screenshot%204.png)
+![Part 5](./assets/Project%20Screenshot%205.png)
+
+*The system implements conversational memory to maintain context between interactions, enabling natural follow-up questions. Users can ask for additional details, different breakdowns of the same data, or comparative analysis without repeating their original query context. This creates a more intuitive and efficient data exploration experience that mimics talking with a human data analyst.*
