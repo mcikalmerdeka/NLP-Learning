@@ -6,7 +6,9 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "agno>=1.5.4",
+    "anthropic>=0.52.0",
     "duckduckgo-search>=8.0.2",
     "ipykernel>=6.29.5",
+    "ipywidgets>=8.1.7",
     "openai>=1.82.0",
 ]
