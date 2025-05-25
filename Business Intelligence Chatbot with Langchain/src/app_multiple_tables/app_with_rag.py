@@ -135,7 +135,9 @@ def initialize_language_model(model_choice):
         return ChatOpenAI(api_key=openai_api_key, model="gpt-4o")
     elif model_choice == "GPT-4.1":
         return ChatOpenAI(api_key=openai_api_key, model="gpt-4.1")
-    else:
+    elif model_choice == "Claude Sonnet 4":
+        return ChatAnthropic(api_key=anthropic_api_key, model="claude-sonnet-4-20250514")
+    else:  # Claude 3.7 Sonnet
         return ChatAnthropic(api_key=anthropic_api_key, model="claude-3-7-sonnet-20250219")
 
 def get_model_response(prompt, model_choice, history=None):
@@ -275,7 +277,7 @@ def main():
     with st.sidebar:
         # Sidebar for Model Configuration
         st.subheader("Model Settings")
-        model_choice = st.selectbox("Select a model", ["GPT-4o", "GPT-4.1", "Claude 3.7 Sonnet"], key="model_choice")
+        model_choice = st.selectbox("Select a model", ["GPT-4o", "GPT-4.1", "Claude 3.7 Sonnet", "Claude Sonnet 4"], key="model_choice")
 
         # Sidebar for Database Configuration
         st.subheader("Database Settings")
