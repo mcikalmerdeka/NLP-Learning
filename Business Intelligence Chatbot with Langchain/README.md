@@ -2,7 +2,7 @@
 
 ![Project Header](https://raw.githubusercontent.com/mcikalmerdeka/NLP-Learning/refs/heads/main/Business%20Intelligence%20Chatbot%20with%20Langchain/assets/Project%20Header.jpg)
 
-This repo is for using LLMs to chat with your SQL database. Inspired by this [Gemini Chatbot repo](https://github.com/ardyadipta/gemini_chatbot_sql). Instead of using MySQL I used PostgreSQL and instead of using Google Gemini model series, I experimented using OpenAI (GPT-4.1 and GPT-4o) and Anthropic (Claude 3.7 Sonnet) model which I am more familiar with and `also later` wanted to try experiment with local models usage such as Deepseek-r1:1.5b and Qwen3:1.7b that is installed in my PC.
+This repo is for using LLMs to chat with your SQL database. Inspired by this [Gemini Chatbot repo](https://github.com/ardyadipta/gemini_chatbot_sql). Instead of using MySQL I used PostgreSQL and instead of using Google Gemini model series, I experimented using OpenAI (GPT-4.1 and GPT-4o) and Anthropic (Claude 3.7 Sonnet and Claude Sonnet 4) models which I am more familiar with and `also later` wanted to try experiment with local models usage such as Deepseek-r1:1.5b and Qwen3:1.7b that is installed in my PC.
 
 ## 🎯 Objective and Project Origin
 
@@ -43,7 +43,7 @@ Analysis of e-commerce data (Olist) using multiple related tables:
 - **Multi-Table Support**: Analyze data across multiple related tables (Olist e-commerce dataset)
 - **Single Table Analysis**: Simpler analysis for sales data scenarios
 - **Streamlit UI**: User-friendly interface for interacting with the database
-- **Multiple LLM Support**: Compatible with OpenAI (GPT-4o), Anthropic (Claude 3.7 Sonnet), and potential support for local models
+- **Multiple LLM Support**: Compatible with OpenAI (GPT-4o, GPT-4.1), Anthropic (Claude 3.7 Sonnet, Claude Sonnet 4), and potential support for local models
 - **Detailed Response Generation**: Formats query results into natural, conversational responses
 - **Conversational Memory**: Maintains chat history to support follow-up questions and contextual conversations
 - **Clear Chat Functionality**: Easily reset conversations with a "Clear Chat History" button in the sidebar
