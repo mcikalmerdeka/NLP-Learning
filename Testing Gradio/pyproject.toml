@@ -6,5 +6,5 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "gradio>=5.32.0",
-    "openai-gradio>=0.0.6",
+    "pydantic-ai>=0.2.13",
 ]
