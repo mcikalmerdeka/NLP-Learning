@@ -2,3 +2,5 @@
 .venv/
 chroma_db/
 .python-version
+__pycache__/
+__init__.py
