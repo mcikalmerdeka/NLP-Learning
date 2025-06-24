@@ -103,6 +103,19 @@ def chunk_documents(raw_documents):
 def index_documents(document_chunks):
     DOCUMENT_VECTOR_DB.add_documents(document_chunks)
 
+# Function to check if document already exists in vector store
+def document_already_exists(file_name):
+    """Check if document already exists in vector store"""
+    try:
+        # For InMemoryVectorStore, we need to check stored documents differently
+        stored_docs = DOCUMENT_VECTOR_DB.similarity_search("", k=1000)  # Get many docs to check sources
+        if stored_docs:
+            existing_files = [doc.metadata.get('source', '') for doc in stored_docs if hasattr(doc, 'metadata')]
+            return any(file_name in file_path for file_path in existing_files)
+    except:
+        pass
+    return False
+
 # Function to format retrieved documents into context
 def format_docs(docs):
     """Format retrieved documents into a single context string"""
@@ -217,17 +230,27 @@ uploaded_pdf = st.file_uploader(
 # Main App Logic
 if uploaded_pdf: # If a PDF file is uploaded
     saved_path = save_uploaded_file(uploaded_pdf) # Save the uploaded file
-    raw_docs = load_pdf_documents(saved_path) # Load the PDF document
-    processed_chunks = chunk_documents(raw_docs) # Chunk the document into smaller parts
-    index_documents(processed_chunks) # Index the document chunks
     
-    # Create the RAG chain using LCEL
-    retriever = create_retriever(k=5)
-    rag_chain = create_rag_chain(LANGUAGE_MODEL, retriever)
-    
-    # Display success message
-    st.success(f"✅ Document processed successfully! Ask your questions below (using {selected_model} with LCEL chain)")
-    
+    # Check if document already exists before processing
+    if not document_already_exists(uploaded_pdf.name):
+        raw_docs = load_pdf_documents(saved_path) # Load the PDF document
+        processed_chunks = chunk_documents(raw_docs) # Chunk the document into smaller parts
+        index_documents(processed_chunks) # Index the document chunks
+        
+        # Create the RAG chain using LCEL
+        retriever = create_retriever(k=5)
+        rag_chain = create_rag_chain(LANGUAGE_MODEL, retriever)
+        
+        # Display success message
+        st.success(f"✅ New document processed and added to vector store! Ask your questions below (using {selected_model} with LCEL chain)")
+    else:
+        # Document already exists, just create retriever and chain
+        retriever = create_retriever(k=5)
+        rag_chain = create_rag_chain(LANGUAGE_MODEL, retriever)
+        
+        # Display info message
+        st.info(f"📄 Document '{uploaded_pdf.name}' already exists in vector store! You can ask questions about it (using {selected_model} with LCEL chain)")
+
     # Display existing chat history
     display_chat_history()
     
