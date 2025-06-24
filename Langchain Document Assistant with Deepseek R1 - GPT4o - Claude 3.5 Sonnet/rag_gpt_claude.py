@@ -7,6 +7,8 @@ from langchain_chroma import Chroma
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough, RunnableLambda
 
 # Load environment variables
 load_dotenv()
@@ -169,34 +171,69 @@ def initialize_vector_store():
         persist_directory="./chroma_db"
     )
 
-# Function to find related documents based on the user query
+# Function to format retrieved documents into context
+def format_docs(docs):
+    """Format retrieved documents into a single context string"""
+    return "\n\n".join([doc.page_content for doc in docs])
+
+# Function to create RAG chain using LCEL
+def create_rag_chain(language_model, retriever):
+    """Create a comprehensive RAG chain using LangChain Expression Language"""
+    
+    # Define the prompt template
+    prompt = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
+    
+    # Create the RAG chain using LCEL syntax
+    rag_chain = (
+        {
+            "document_context": retriever | RunnableLambda(format_docs),
+            "user_query": RunnablePassthrough()
+        }
+        | prompt
+        | language_model
+        | StrOutputParser()
+    )
+    
+    return rag_chain
+
+# Function to find related documents based on the user query (now returns retriever)
+def create_retriever(k=5):
+    """Create a retriever from the vector store"""
+    return DOCUMENT_VECTOR_DB.as_retriever(search_kwargs={"k": k})
+
+# Updated function to generate an answer using LCEL chain
+def generate_answer_with_chain(user_query, rag_chain):
+    """Generate answer using the RAG chain with LCEL"""
+    try:
+        # Invoke the chain with the user query
+        response = rag_chain.invoke(user_query)
+        
+        # Clean up the response
+        cleaned_response = response.strip()
+        cleaned_response = '\n'.join(line.strip() for line in cleaned_response.split('\n') if line.strip())
+        
+        return cleaned_response
+    except Exception as e:
+        return f"Error generating response: {str(e)}"
+
+# Legacy function for backward compatibility (keeping the old approach as fallback)
 def find_related_documents(query, k=5): # k is the number of documents to return
     return DOCUMENT_VECTOR_DB.similarity_search(query, k=k)
 
-# Function to generate an answer using the language model
+# Legacy function for backward compatibility
 def generate_answer(user_query, context_documents, language_model):
     context_text = "\n\n".join([doc.page_content for doc in context_documents])
     conversation_prompt = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
-    response_chain = conversation_prompt | language_model
+    response_chain = conversation_prompt | language_model | StrOutputParser()
     
     # Get the response
-    raw_response = response_chain.invoke({
+    response = response_chain.invoke({
         "user_query": user_query, 
         "document_context": context_text
     })
     
-    # Extract and clean the content
-    if hasattr(raw_response, 'content'):
-        # For Claude's response format
-        cleaned_response = raw_response.content
-    else:
-        # For GPT-4's response format
-        cleaned_response = str(raw_response)
-    
-    # Remove any leading/trailing whitespace and extra newlines
-    cleaned_response = cleaned_response.strip()
-    
-    # Replace multiple newlines with a single newline for better readability
+    # Clean up the response
+    cleaned_response = response.strip()
     cleaned_response = '\n'.join(line.strip() for line in cleaned_response.split('\n') if line.strip())
     
     return cleaned_response
@@ -253,8 +290,12 @@ if uploaded_pdf: # If a PDF file is uploaded
     processed_chunks = chunk_documents(raw_docs) # Chunk the document into smaller parts
     index_documents(processed_chunks) # Index the document chunks
     
+    # Create the RAG chain using LCEL
+    retriever = create_retriever(k=5)
+    rag_chain = create_rag_chain(LANGUAGE_MODEL, retriever)
+    
     # Display success message
-    st.success(f"✅ Document processed successfully! Ask your questions below (using {selected_model})")
+    st.success(f"✅ Document processed successfully! Ask your questions below (using {selected_model} with LCEL chain)")
     
     # Display existing chat history
     display_chat_history()
@@ -266,9 +307,9 @@ if uploaded_pdf: # If a PDF file is uploaded
         # Add user message to chat history
         st.session_state.chat_history.append({"role": "user", "content": user_input})
         
-        with st.spinner("Analyzing document..."):
-            relevant_docs = find_related_documents(user_input) # Find relevant documents based on the user query
-            ai_response = generate_answer(user_input, relevant_docs, LANGUAGE_MODEL) # Generate an answer using the language model
+        with st.spinner("Analyzing document with LCEL chain..."):
+            # Use the new LCEL chain approach
+            ai_response = generate_answer_with_chain(user_input, rag_chain)
             
             # Add assistant response to chat history
             st.session_state.chat_history.append({"role": "assistant", "content": ai_response})
