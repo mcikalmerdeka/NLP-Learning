@@ -9,6 +9,7 @@ from langchain_anthropic import ChatAnthropic
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough, RunnableLambda
+from styles.streamlit_theme import apply_custom_theme
 
 """
 This is the old approach to the RAG system. Where it uses the InMemoryVectorStore to store the document chunks instead of the ChromaDB vector database.
@@ -22,64 +23,8 @@ load_dotenv()
 if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
 
-# Create a custom CSS theme for the Streamlit app
-st.markdown("""
-    <style>
-    .stApp {
-        background-color: #f0f2f6;
-        color: #262730;
-    }
-    
-    /* Chat Input Styling */
-    .stChatInput input {
-        background-color: #ffffff !important;
-        color: #262730 !important;
-        border: 1px solid #cccccc !important;
-    }
-    
-    /* User Message Styling */
-    .stChatMessage[data-testid="stChatMessage"]:nth-child(odd) {
-        background-color: #e6f3ff !important;
-        border: 1px solid #b3d9ff !important;
-        color: #262730 !important;
-        border-radius: 10px;
-        padding: 15px;
-        margin: 10px 0;
-    }
-    
-    /* Assistant Message Styling */
-    .stChatMessage[data-testid="stChatMessage"]:nth-child(even) {
-        background-color: #ffffff !important;
-        border: 1px solid #e6e6e6 !important;
-        color: #262730 !important;
-        border-radius: 10px;
-        padding: 15px;
-        margin: 10px 0;
-    }
-    
-    /* Avatar Styling */
-    .stChatMessage .avatar {
-        background-color: #4b9eff !important;
-        color: #ffffff !important;
-    }
-    
-    /* Text Color Fix */
-    .stChatMessage p, .stChatMessage div {
-        color: #262730 !important;
-    }
-    
-    .stFileUploader {
-        background-color: #ffffff;
-        border: 1px solid #cccccc;
-        border-radius: 5px;
-        padding: 15px;
-    }
-    
-    h1, h2, h3 {
-        color: #0068c9 !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+# Apply custom CSS theme
+apply_custom_theme()
 
 # Define prompt template and model configurations
 PROMPT_TEMPLATE = """
