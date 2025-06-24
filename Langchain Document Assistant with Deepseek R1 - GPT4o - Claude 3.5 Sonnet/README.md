@@ -6,7 +6,7 @@ A powerful LLM-powered document assistant that extracts information from various
 
 ## 🚀 Features
 
-- **Multiple LLM Support**: Integrates with GPT-4o, GPT-4.1, Claude 3.7 Sonnet, and DeepSeek-R1 models
+- **Multiple LLM Support**: Integrates with GPT-4o, GPT-4.1, Claude Sonnet 4, and DeepSeek-R1 models
 - **Document Processing**: Efficiently processes PDF documents, extracting and indexing their content
 - **Semantic Search**: Uses vector embeddings to find the most relevant information from your documents
 - **Conversational Interface**: Clean, intuitive chat interface to ask questions about your documents
@@ -66,13 +66,13 @@ A powerful LLM-powered document assistant that extracts information from various
 
 ## 🚀 Usage
 
-### GPT-4o and Claude 3.7 Version (ChromaDB)
+### GPT-4o and Claude Sonnet 4 Version (ChromaDB)
 
 ```
 streamlit run rag_gpt_claude.py
 ```
 
-### GPT-4o and Claude 3.7 Version (Legacy InMemoryVectorStore)
+### GPT-4o and Claude Sonnet 4 Version (Legacy InMemoryVectorStore)
 
 ```
 streamlit run rag_gpt_claude_old_approach.py
@@ -92,12 +92,12 @@ streamlit run rag_deepseek_r1.py
 
 ## 📊 Comparison of Available Models
 
-| Model             | Type  | Best For                                  | Required Setup      | Implementation                            |
-| ----------------- | ----- | ----------------------------------------- | ------------------- | ----------------------------------------- |
-| GPT-4o            | Cloud | High accuracy, complex queries            | OpenAI API key      | ChatOpenAI with temperature=0             |
-| GPT-4.1           | Cloud | Latest OpenAI model with improved reasoning | OpenAI API key    | ChatOpenAI with temperature=0             |
-| Claude 3.7 Sonnet | Cloud | Nuanced understanding, detailed responses | Anthropic API key   | ChatAnthropic with temperature=0          |
-| DeepSeek R1       | Local | Privacy, offline use, faster responses    | Ollama installation | OllamaLLM with the deepseek-r1:1.5b model |
+| Model           | Type  | Best For                                       | Required Setup      | Implementation                            |
+| --------------- | ----- | ---------------------------------------------- | ------------------- | ----------------------------------------- |
+| GPT-4o          | Cloud | High accuracy, complex queries                 | OpenAI API key      | ChatOpenAI with temperature=0             |
+| GPT-4.1         | Cloud | Latest OpenAI model with improved reasoning    | OpenAI API key      | ChatOpenAI with temperature=0             |
+| Claude Sonnet 4 | Cloud | Latest Claude model with enhanced capabilities | Anthropic API key   | ChatAnthropic with temperature=0          |
+| DeepSeek R1     | Local | Privacy, offline use, faster responses         | Ollama installation | OllamaLLM with the deepseek-r1:1.5b model |
 
 ## 🔍 Embedding Models
 

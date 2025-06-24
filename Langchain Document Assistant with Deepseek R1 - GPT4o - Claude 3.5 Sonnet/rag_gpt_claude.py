@@ -103,7 +103,7 @@ DOCUMENT_VECTOR_DB = Chroma(
 MODEL_OPTIONS = {
     "GPT-4o": "gpt-4o",
     "GPT-4.1": "gpt-4.1",
-    "Claude 3.7 Sonnet": "claude-3-7-sonnet-20250219"
+    "Claude Sonnet 4": "claude-sonnet-4-20250514"
 }
 
 # Initialize the chosen language model
@@ -122,10 +122,10 @@ def initialize_language_model(model_choice):
             temperature=0,
             max_tokens=1024
         )
-    else:  # Claude 3.7 Sonnet
+    else:  # Claude Sonnet 4
         return ChatAnthropic(
             api_key=os.getenv("ANTHROPIC_API_KEY"),
-            model="claude-3-7-sonnet-20250219",
+            model="claude-sonnet-4-20250514",
             temperature=0,
             max_tokens=1024
         )
