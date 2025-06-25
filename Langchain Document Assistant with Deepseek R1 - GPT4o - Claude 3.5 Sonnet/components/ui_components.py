@@ -13,6 +13,16 @@ def render_app_info_expander():
         """
     )
 
+def render_app_info_expander_simple():
+    """Render simplified application information expander for scripts without external search"""
+    return st.expander("ℹ️ About DocuChat AI").markdown(
+        """
+        - This app allows you to upload a research document (in PDF format) and ask questions about its content.
+        - The AI assistant will help you find answers to your questions based on the document content.
+        - Choose an AI model from the sidebar and upload a PDF document to get started!
+        """
+    )
+
 def render_developer_flow_expander():
     """Render the developer execution flow expander"""
     return st.expander("🔧 Application Execution Flow (For Developers)").markdown(
@@ -41,6 +51,70 @@ def render_developer_flow_expander():
         - Session state stores chat history
         - ChromaDB persists document embeddings
         - Vector store reused across sessions for same documents
+        """
+    )
+
+def render_old_approach_flow_expander():
+    """Render developer execution flow expander for old approach script"""
+    return st.expander("🔧 Application Execution Flow - Old Approach (For Developers)").markdown(
+        """
+        **1. Document Processing Pipeline:**
+        - `save_uploaded_file()` → Save PDF to `document_store/pdfs/`
+        - `document_already_exists()` → Check if file exists in InMemoryVectorStore
+        - `load_pdf_documents()` → Load PDF using PyMuPDFLoader
+        - `chunk_documents()` → Split into 1000-char chunks with 200 overlap
+        - `index_documents()` → Store embeddings in InMemoryVectorStore
+
+        **2. RAG Chain Creation:**
+        - `create_retriever()` → Initialize similarity search retriever (k=5)
+        - `create_rag_chain()` → Build LCEL chain with chosen prompt template
+        - Chain: `{context, query} → prompt → LLM → parser`
+
+        **3. Answer Generation Flow:**
+        - `generate_enhanced_answer()` → Enhanced orchestration function
+        - Step 1: Get initial response from RAG chain
+        - Step 2: Check for `[EXTERNAL_SEARCH_NEEDED]` marker
+        - Step 3: If needed & enabled: `lookup()` external search via Tavily
+        - Step 4: Combine document + external context using enhanced prompt
+        - Step 5: Generate final response and clean formatting
+
+        **4. Key Differences from Main Version:**
+        - Uses InMemoryVectorStore (non-persistent, session-based)
+        - Document existence check via similarity search
+        - **Same external search capabilities as main version**
+        - Session-based storage vs persistent ChromaDB
+        """
+    )
+
+def render_deepseek_flow_expander():
+    """Render developer execution flow expander for DeepSeek script"""
+    return st.expander("🔧 Application Execution Flow - DeepSeek R1 (For Developers)").markdown(
+        """
+        **1. Document Processing Pipeline:**
+        - `save_uploaded_file()` → Save PDF to `document_store/pdfs/`
+        - `load_pdf_documents()` → Load PDF using PDFPlumberLoader
+        - `chunk_documents()` → Split into 1000-char chunks with 200 overlap
+        - `index_documents()` → Store embeddings in InMemoryVectorStore
+
+        **2. RAG Chain Creation:**
+        - `create_retriever()` → Initialize similarity search retriever (k=5)
+        - `create_rag_chain()` → Build LCEL chain with chosen prompt template
+        - Chain: `{context, query} → prompt → DeepSeek LLM → parser`
+
+        **3. Answer Generation Flow:**
+        - `generate_enhanced_answer()` → Enhanced orchestration function
+        - Step 1: Get initial response from RAG chain
+        - Step 2: Check for `[EXTERNAL_SEARCH_NEEDED]` marker
+        - Step 3: If needed & enabled: `lookup()` external search via Tavily
+        - Step 4: Combine document + external context using enhanced prompt
+        - Step 5: Generate final response and clean formatting
+
+        **4. Model Configuration:**
+        - **Embeddings**: OpenAI text-embedding-3-large (cloud)
+        - **Language Model**: DeepSeek R1:1.5b via Ollama (local)
+        - **Vector Store**: InMemoryVectorStore (non-persistent)
+        - **PDF Loader**: PDFPlumberLoader (alternative to PyMuPDF)
+        - **External Search**: Same capabilities as other versions
         """
     )
 
