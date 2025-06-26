@@ -3,4 +3,5 @@
 chroma_db/
 __pycache__/
 __init__.py
+secrets.toml
 reminder/
