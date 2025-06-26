@@ -306,26 +306,3 @@ if uploaded_pdf:
         
         # Rerun to display the updated chat history
         st.rerun()
-
-else:
-    # Show instructions when no file is uploaded
-    st.info("👆 Please upload a PDF document to get started!")
-    
-    # Optional: Show some example questions or features
-    with st.expander("💡 What can you do with this app?"):
-        st.markdown("""
-        **Document Analysis:**
-        - Upload any PDF document
-        - Ask questions about the content
-        - Get AI-powered insights and summaries
-        
-        **Advanced Features:**
-        - External search integration when document context is insufficient
-        - Multiple AI model options (GPT-4o, GPT-4.1, Claude Sonnet 4)
-        - Smart document chunking and retrieval
-        
-        **Example Questions:**
-        - "What is the main topic of this document?"
-        - "Summarize the key findings"
-        - "What are the recommendations mentioned?"
-        """) 
