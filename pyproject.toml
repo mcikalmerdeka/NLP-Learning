@@ -1,0 +1,20 @@
+[project]
+name = "langchain-document-assistant-with-deepseek-r1-gpt4o-claude-3-5-sonnet"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "langchain-anthropic>=0.3.13",
+    "langchain-chroma>=0.2.3",
+    "langchain-community>=0.3.24",
+    "langchain-core>=0.3.59",
+    "langchain-ollama>=0.3.2",
+    "langchain-openai>=0.3.16",
+    "langchain-text-splitters>=0.3.8",
+    "pymupdf>=1.25.5",
+    "python-dotenv>=1.1.0",
+    "streamlit>=1.45.1",
+    "protobuf<=3.20.3",
+    "langchain-tavily>=0.2.4",
+]
