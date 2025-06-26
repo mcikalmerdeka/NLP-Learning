@@ -4,6 +4,25 @@
 
 A powerful LLM-powered document assistant that extracts information from various documents, supporting files containing both text and image components. This application enables seamless data retrieval and analysis from your content library with **enhanced external search capabilities** for comprehensive answers.
 
+## 🌐 Try the Live Demo
+
+**🚀 [Launch DocuChat AI](https://docu-chat-ai.streamlit.app/)**
+
+Experience the power of AI-driven document analysis instantly! No setup required - just upload your PDF and start asking questions.
+
+### Cloud vs Local Deployment
+
+| Feature | **Cloud Version** (Streamlit Community Cloud) | **Local Version** (`rag_gpt_claude.py`) |
+|---------|-----------------------------------------------|------------------------------------------|
+| **Setup** | Zero setup - ready to use | Requires local installation & API keys |
+| **Storage** | InMemoryVectorStore (session-based) | ChromaDB (persistent) |
+| **File Persistence** | Documents reset on app restart | Documents saved permanently |
+| **Performance** | Shared resources, 1GB memory limit | Full local resources |
+| **Concurrent Users** | 3-5 users on free tier | Single user (your machine) |
+| **External Search** | Limited without Tavily API key | Full capability with API keys |
+| **Privacy** | Documents processed on Streamlit servers | Complete local privacy |
+| **Best For** | Quick testing, sharing, demos | Production use, large documents, privacy |
+
 ## 🚀 Features
 
 - **Multiple LLM Support**: Integrates with GPT-4o, GPT-4.1, Claude Sonnet 4, and DeepSeek-R1 models
@@ -46,12 +65,14 @@ A powerful LLM-powered document assistant that extracts information from various
 ### Example Use Cases
 
 **Questions that trigger external search:**
+
 - "What are the latest developments in [topic not in your document]?"
 - "What happened after [date mentioned in document]?"
 - "How does this compare to recent industry trends?"
 - "What are the current market conditions for [topic]?"
 
 **Questions that use document only:**
+
 - Direct questions about content explicitly mentioned in your uploaded PDF
 - Summaries of document sections
 - Analysis of data/charts within the document
@@ -103,23 +124,31 @@ A powerful LLM-powered document assistant that extracts information from various
 
 ## 🚀 Usage
 
-### GPT-4o and Claude Sonnet 4 Version (ChromaDB)
+### Cloud Version (No Setup Required)
+
+Simply visit **[https://docu-chat-ai.streamlit.app/](https://docu-chat-ai.streamlit.app/)** to start using the application immediately!
+
+### Local Installation
+
+#### GPT-4o and Claude Sonnet 4 Version (ChromaDB)
 
 ```
 streamlit run rag_gpt_claude.py
 ```
 
-### GPT-4o and Claude Sonnet 4 Version (Legacy InMemoryVectorStore)
+#### GPT-4o and Claude Sonnet 4 Version (Legacy InMemoryVectorStore)
 
 ```
 streamlit run rag_gpt_claude_old_approach.py
 ```
 
-### DeepSeek R1 Version
+#### DeepSeek R1 Version
 
 ```
 streamlit run rag_deepseek_r1.py
 ```
+
+### How to Use
 
 1. Upload a PDF document using the file uploader
 2. **Choose your search mode**: Toggle external search ON/OFF in the sidebar
@@ -127,6 +156,45 @@ streamlit run rag_deepseek_r1.py
 4. Ask questions about the document content using the chat interface
 5. **Enhanced Responses**: Get AI-generated responses that combine document content with external search results (when enabled)
 6. Use the "Clear Chat History" button in the sidebar to start a new conversation
+
+## 🌐 Cloud Deployment
+
+### Streamlit Community Cloud
+
+The application is deployed on **Streamlit Community Cloud** and accessible at:
+**🔗 [https://docu-chat-ai.streamlit.app/](https://docu-chat-ai.streamlit.app/)**
+
+#### Key Features for Cloud Deployment
+
+✅ **InMemoryVectorStore** - No persistence issues on cloud platforms  
+✅ **Temporary file handling** - Cloud-compatible PDF processing  
+✅ **Session state tracking** - Remembers processed files during your session  
+✅ **Cached resources** - Optimized performance  
+✅ **Error handling** - Robust cloud deployment with graceful fallbacks  
+✅ **Graceful fallbacks** - Works even without external search API keys  
+
+#### Cloud Limitations
+
+⚠️ **File persistence:** Documents reset when app restarts (session-based storage)  
+⚠️ **Concurrent users:** ~3-5 users simultaneously on free tier  
+⚠️ **Resource limits:** 1GB memory limit on Streamlit Community Cloud  
+⚠️ **External search:** Limited functionality without Tavily API key  
+
+#### Deploy Your Own Instance
+
+1. **Fork this repository** on GitHub
+2. **Deploy on Streamlit Cloud:**
+   - Go to [share.streamlit.io/new](https://share.streamlit.io/new)
+   - Select your forked repository
+   - **Main file path:** `streamlit_cloud.py`
+3. **Set environment variables:**
+   ```
+   OPENAI_API_KEY=your_openai_api_key_here
+   ANTHROPIC_API_KEY=your_anthropic_api_key_here
+   TAVILY_API_KEY=your_tavily_api_key_here (optional)
+   ```
+
+**Note:** External search will work with limited functionality without the Tavily API key. Get a free API key at [tavily.com](https://tavily.com) for full external search capability.
 
 ## 📊 Comparison of Available Models
 
@@ -146,7 +214,20 @@ The application uses different embedding models based on the version:
 
 ## 🔒 Privacy
 
-- **Cloud models** (GPT-4o, GPT-4.1, Claude Sonnet 4): Document content is sent to external APIs
+### Cloud Deployment (Streamlit Community Cloud)
+- **Document processing**: Files are temporarily processed on Streamlit servers
+- **No persistence**: Documents are deleted when session ends or app restarts
+- **API calls**: Document content sent to OpenAI/Anthropic APIs for processing
+- **External search**: Search queries sent to Tavily API when enabled
+
+### Local Deployment
+- **Complete privacy**: All document processing happens on your machine
+- **Local storage**: Documents stored in local ChromaDB (persistent)
+- **API calls**: Only model responses sent to external APIs (OpenAI/Anthropic)
+- **DeepSeek R1**: Fully local processing with no external API calls
+
+### Model Privacy Levels
+- **Cloud models** (GPT-4o, GPT-4.1, Claude Sonnet 4): Document content sent to external APIs
 - **Local models** (DeepSeek R1): All processing happens locally with no data leaving your machine
 - **External Search**: When enabled, search queries are sent to Tavily API for external information
 
@@ -177,7 +258,7 @@ The application uses an intelligent agent system for external search:
 ### Example Workflow
 
 1. Upload a research paper about AI from 2023
-2. Ask: "What are the latest AI developments in 2024?" 
+2. Ask: "What are the latest AI developments in 2024?"
 3. Watch as the AI:
    - Recognizes the document doesn't contain 2024 information
    - Automatically searches external sources via Tavily
