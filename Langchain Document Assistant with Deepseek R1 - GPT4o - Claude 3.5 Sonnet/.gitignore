@@ -3,4 +3,4 @@
 chroma_db/
 __pycache__/
 __init__.py
-*.txt
+reminder/

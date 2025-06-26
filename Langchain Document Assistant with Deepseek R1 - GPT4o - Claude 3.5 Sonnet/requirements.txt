@@ -1,0 +1,12 @@
+streamlit>=1.45.1
+langchain-core>=0.3.59
+langchain-community>=0.3.24
+langchain-openai>=0.3.16
+langchain-anthropic>=0.3.13
+langchain-tavily>=0.2.4
+langchain-text-splitters>=0.3.8
+python-dotenv>=1.1.0
+PyMuPDF>=1.25.5
+protobuf<=3.20.3
+openai>=1.12.0
+anthropic>=0.18.0 
