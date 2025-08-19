@@ -1,4 +1,12 @@
+# Ignore certain folders
 AI Chatbot Using Feedforward Neural Network (FNN)/
 Gen AI Project Using Llama3.1/
 Amazon Reviews Sentiment Analysis/
 Langflow Customer Support Agent/
+
+# Ignore certain files
+.python-version
+.venv/
+.devcontainer/
+pyproject.toml
+uv.lock
