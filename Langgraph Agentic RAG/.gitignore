@@ -1,0 +1,24 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.pytest_cache/
+.benchmarks/
+
+# Virtual environments
+.venv
+
+# Environment variables
+.env
+
+# Python packages files
+*__init__.py
+
+# IDE/Editor files
+.vscode/
+
+# Additional files
+.chroma_db/
