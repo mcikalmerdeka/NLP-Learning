@@ -1,6 +1,6 @@
 # LangGraph Agentic RAG: Intelligent Document Retrieval System
 
-![Project Header](https://via.placeholder.com/800x200/2E8B57/FFFFFF?text=LangGraph+Agentic+RAG+System)
+![Project Header](https://raw.githubusercontent.com/mcikalmerdeka/NLP-Learning/refs/heads/main/Langgraph%20Agentic%20RAG/assets/AI%20Agent%20with%20Langgraph.jpg)
 
 An advanced **Retrieval-Augmented Generation (RAG)** system built with **LangGraph** that combines intelligent document retrieval, web search capabilities, and multi-stage quality validation to provide accurate, contextually-aware responses. This system implements a sophisticated agentic workflow that automatically routes queries, validates document relevance, and ensures response quality through hallucination detection.
 
